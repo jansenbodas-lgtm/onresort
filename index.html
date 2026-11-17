@@ -29,14 +29,14 @@
       <span class="brand__text"><b>N RESORT</b><small>Cidade Jardim</small></span>
     </a>
     <nav class="nav" id="nav" aria-label="Principal">
-      <a href="#rentabilidade">Rentabilidade</a>
+      <a href="#oportunidade">Oportunidade</a>
       <a href="#investir">Por que investir</a>
       <a href="#lazer">Lazer</a>
       <a href="#plantas">Plantas</a>
       <a href="#bairro">Cidade Jardim</a>
       <a href="#localizacao">Localização</a>
     </nav>
-    <a href="#contato" class="btn btn--sm btn--light header__cta">Receber estudo de renda</a>
+    <a href="#contato" class="btn btn--sm btn--light header__cta">Tabela de lançamento</a>
     <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
   </div>
 </header>
@@ -49,7 +49,7 @@
   <div class="hero__shade"></div>
   <div class="container hero__grid">
     <div class="hero__copy">
-      <p class="eyebrow eyebrow--light">Oportunidade de investimento · Lançamento RJZ Cyrela</p>
+      <p class="eyebrow eyebrow--light">Lançamento RJZ Cyrela · Barra Olímpica</p>
       <h1 class="hero__title"><span class="hero__t" data-mode-text="investir">Renda de hotel na Barra Olímpica, <em>com a solidez de um RJZ Cyrela.</em></span><span class="hero__t" data-mode-text="viver">A vida muda com o modo que você escolhe <em>viver</em>.</span></h1>
 
       <div class="mode" role="group" aria-label="Escolha o seu modo">
@@ -71,14 +71,14 @@
       <p class="hero__fine" data-mode-panel="investir">*Estudo de viabilidade Charlie (jul/2026), cenário base. Projeção sem garantia de rentabilidade.</p>
 
       <div class="hero__cta">
-        <a href="#rentabilidade" class="btn btn--light">Simular minha renda</a>
+        <a href="#contato" class="btn btn--light">Garantir condição de lançamento</a>
         <div class="hero__tags"><span>Studios</span><span>1 e 2 quartos</span><span>Gardens</span></div>
       </div>
     </div>
 
     <!-- Formulário principal -->
     <form class="lead-form" id="formHero" novalidate data-origem="hero">
-      <h2 class="lead-form__title">Receba a tabela de lançamento e o <b>estudo de rentabilidade completo</b></h2>
+      <h2 class="lead-form__title">Receba a <b>tabela de lançamento</b> antes que as melhores unidades saiam</h2>
       <label class="field"><span>Nome</span><input name="nome" type="text" autocomplete="name" required placeholder="Seu nome"></label>
       <label class="field"><span>WhatsApp</span><input name="telefone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="(21) 99999-9999"></label>
       <label class="field"><span>E-mail</span><input name="email" type="email" autocomplete="email" required placeholder="voce@email.com"></label>
@@ -90,11 +90,11 @@
       </fieldset>
       <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="consent"><input type="checkbox" name="consentimento" required> <span>Aceito receber contato e concordo com a <a href="#privacidade">política de privacidade</a>.</span></label>
-      <button class="btn btn--accent btn--block" type="submit">Quero o estudo de rentabilidade</button>
+      <button class="btn btn--accent btn--block" type="submit">Quero a tabela de lançamento</button>
       <p class="lead-form__msg" role="status" aria-live="polite"></p>
     </form>
   </div>
-  <a href="#rentabilidade" class="hero__scroll" aria-label="Rolar para o conteúdo"><span></span></a>
+  <a href="#oportunidade" class="hero__scroll" aria-label="Rolar para o conteúdo"><span></span></a>
 </section>
 
 <!-- ============ NÚMEROS ============ -->
@@ -107,122 +107,52 @@
   </div>
 </section>
 
-<!-- ============ RENTABILIDADE ============ -->
-<section class="section renda" id="rentabilidade">
+<!-- ============ OPORTUNIDADE ============ -->
+<section class="section oport" id="oportunidade">
   <div class="container">
-    <div class="section__head reveal">
-      <p class="eyebrow">Rentabilidade</p>
-      <h2 class="h2">Quanto o seu ON Resort pode <em>render por mês.</em></h2>
-      <p class="lead">Simulação com base no estudo de viabilidade da Charlie, operadora de short stay, a partir de dados reais de mercado da Barra Olímpica. A renda já desconta condomínio, IPTU, comissões das plataformas, gestão e manutenção.</p>
-    </div>
-
-    <div class="sim" id="simulador">
-      <div class="sim__controls">
-        <p class="sim__label" id="lblTipo">Escolha a tipologia</p>
-        <div class="sim__tipos" role="group" aria-labelledby="lblTipo">
-          <button type="button" data-tipo="studio" aria-pressed="true">Studio<small>33 m²</small></button>
-          <button type="button" data-tipo="q1" aria-pressed="false">1 quarto<small>39 m²</small></button>
-          <button type="button" data-tipo="q2" aria-pressed="false">2 quartos<small>59 m²</small></button>
-          <button type="button" data-tipo="gs" aria-pressed="false">Garden studio<small>52 m²</small></button>
-          <button type="button" data-tipo="g1" aria-pressed="false">Garden 1Q<small>53 m²</small></button>
-          <button type="button" data-tipo="g2" aria-pressed="false">Garden 2Q<small>88 m²</small></button>
-        </div>
-
-        <label class="sim__range">
-          <span class="sim__row"><span>Diária média</span><output id="outDiaria">R$ 415</output></span>
-          <input type="range" id="simDiaria" aria-label="Diária média">
-        </label>
-        <label class="sim__range">
-          <span class="sim__row"><span>Ocupação na curta temporada</span><output id="outOcup">72,5%</output></span>
-          <input type="range" id="simOcup" aria-label="Ocupação">
-        </label>
-        <label class="field sim__valor">
-          <span>Valor do imóvel (opcional)</span>
-          <input type="text" id="simValor" inputmode="numeric" placeholder="R$ 0" autocomplete="off">
-        </label>
-        <button type="button" class="sim__reset" id="simReset">Voltar ao cenário base</button>
-      </div>
-
-      <div class="sim__result" aria-live="polite">
-        <p class="sim__tipo" id="outTipo">Studio 33 m² · Ed. Polinésia</p>
-        <p class="sim__big-label"><span id="outCenario">Cenário base do estudo</span> · renda líquida mensal</p>
-        <p class="sim__big" id="outLiquida">R$ 4.824</p>
-        <p class="sim__annual"><b id="outAnual">R$ 57.888</b> por ano · receita bruta de <span id="outBruta">R$ 8.685</span>/mês</p>
-        <p class="sim__yield" id="outYield">Informe o valor do imóvel para ver o retorno anual estimado.</p>
-
-        <div class="sim__bar" role="img" aria-label="Divisão da receita bruta entre renda líquida e custos">
-          <span class="sim__bar-liq" id="barLiq"></span><span class="sim__bar-cus" id="barCus"></span>
-        </div>
-        <ul class="sim__legend">
-          <li><i class="k-liq"></i>Renda líquida <b id="lblLiq"></b></li>
-          <li><i class="k-cus"></i>Custos, taxas e gestão <b id="lblCus"></b></li>
-        </ul>
-
-        <details class="sim__dre">
-          <summary>Ver demonstrativo completo</summary>
-          <table><tbody id="simDre"></tbody></table>
-        </details>
-        <a href="#contato" class="btn btn--accent btn--block" id="simCta">Quero o estudo completo e a tabela</a>
-      </div>
-    </div>
-
-    <div class="renda__table reveal">
-      <h3>Cenário base por tipologia</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Tipologia</th><th scope="col">Diária</th><th scope="col">Ocupação</th><th scope="col">Receita bruta</th><th scope="col">Renda líquida</th></tr></thead>
-          <tbody>
-            <tr data-sim-row="studio"><th scope="row">Studio 33 m²</th><td>R$ 415</td><td>72,5%</td><td>R$ 8.685</td><td><b>R$ 4.824</b></td></tr>
-            <tr data-sim-row="q1"><th scope="row">1 quarto 39 m²</th><td>R$ 460</td><td>72,5%</td><td>R$ 9.627</td><td><b>R$ 5.264</b></td></tr>
-            <tr data-sim-row="q2"><th scope="row">2 quartos 59 m²</th><td>R$ 580</td><td>70%</td><td>R$ 11.693</td><td><b>R$ 6.295</b></td></tr>
-            <tr data-sim-row="gs"><th scope="row">Garden studio 52 m²</th><td>R$ 460</td><td>75%</td><td>R$ 10.126</td><td><b>R$ 5.316</b></td></tr>
-            <tr data-sim-row="g1"><th scope="row">Garden 1Q 53 m²</th><td>R$ 490</td><td>75%</td><td>R$ 10.787</td><td><b>R$ 5.695</b></td></tr>
-            <tr data-sim-row="g2"><th scope="row">Garden 2Q 88 m²</th><td>R$ 650</td><td>75%</td><td>R$ 14.500</td><td><b>R$ 7.500</b></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="table-hint">Toque em uma linha para simular.</p>
-    </div>
-
-    <div class="mercado">
-      <div class="mercado__head reveal">
-        <p class="eyebrow">Por que os números fecham</p>
-        <h3>Demanda de hotel, preço de apartamento.</h3>
-        <p>A Barra Olímpica recebe festivais, shows e grandes eventos esportivos o ano inteiro. Os hotéis da região cobram, em média, mais que o dobro da diária usada no estudo. Isso dá ao ON Resort espaço para competir em preço e manter alta ocupação.</p>
-      </div>
-      <div class="kpis">
-        <div class="kpi reveal"><b>R$ 886</b><span>diária média dos hotéis da região: Hilton Barra, Novotel Parque Olímpico, Residence Inn by Marriott e outros</span></div>
-        <div class="kpi reveal"><b>R$ 415</b><span>diária base do estudo para o studio: <strong>53% abaixo</strong> da média hoteleira</span></div>
-        <div class="kpi reveal"><b>+8,6%</b><span>alta da diária média de short stay upscale na região de 2024 a 2026 (R$ 455 → R$ 494)</span></div>
-        <div class="kpi reveal"><b>R$ 697</b><span>diária média de short stay luxury na região em 2026, acima de qualquer cenário do estudo</span></div>
-      </div>
-    </div>
-
-    <div class="gestao reveal">
-      <div class="gestao__copy">
-        <p class="eyebrow eyebrow--light">Gestão profissional</p>
-        <h3>Modelo 100% alinhado com o investidor.</h3>
-        <p>A operadora só ganha quando você ganha: sem mensalidade fixa, com remuneração sobre a receita gerada.</p>
-        <div class="gestao__fees">
-          <div><b>18%</b><span>sobre a receita bruta da curta temporada</span></div>
-          <div><b>15%</b><span>sobre a receita bruta da locação mensal</span></div>
-          <div><b>R$ 0</b><span>de custo de limpeza para o proprietário</span></div>
+    <div class="oport__grid">
+      <div class="oport__copy reveal">
+        <p class="eyebrow">A oportunidade</p>
+        <h2 class="h2">Um apartamento que trabalha <em>enquanto você vive a sua vida.</em></h2>
+        <p class="lead">Na Barra Olímpica, palco de festivais e grandes eventos o ano inteiro, os hotéis cobram em média <b>R$ 886 por diária</b>. O ON Resort entrega a mesma experiência de resort por muito menos, e é exatamente aí que mora a oportunidade para quem compra agora.</p>
+        <div class="oport__big">
+          <span>Renda líquida estimada a partir de</span>
+          <b>R$ 4.824<small>/mês</small></b>
+          <span>no studio de 33 m², com gestão profissional*</span>
         </div>
       </div>
-      <ul class="gestao__list">
-        <li>Preparação da unidade</li>
-        <li>Precificação inteligente</li>
-        <li>Anúncios e marketing</li>
-        <li>Distribuição otimizada nas plataformas de reserva</li>
-        <li>Atendimento ao hóspede 24h/7</li>
-        <li>Gestão da manutenção</li>
-      </ul>
+
+      <div class="oport__lock reveal" aria-label="Estudo de rentabilidade completo disponível no WhatsApp">
+        <div class="lock__rows" aria-hidden="true">
+          <div><span>Studio 33 m²</span><b>R$ 4.824</b></div>
+          <div><span>1 quarto 39 m²</span><b class="blur">R$ 5.264</b></div>
+          <div><span>2 quartos 59 m²</span><b class="blur">R$ 6.295</b></div>
+          <div><span>Garden studio 52 m²</span><b class="blur">R$ 5.316</b></div>
+        </div>
+        <div class="lock__cta">
+          <span class="lock__icon" aria-hidden="true">🔒</span>
+          <h3>Quanto rende cada tipologia?</h3>
+          <p>O estudo de rentabilidade completo é enviado pelo corretor, junto com a tabela de lançamento.</p>
+          <a href="#" class="btn btn--accent" data-whatsapp data-origem="estudo-bloqueado" data-mensagem="Quero receber o estudo de rentabilidade completo do ON Resort.">Liberar o estudo completo</a>
+        </div>
+      </div>
     </div>
 
-    <p class="note">Projeção baseada em dados históricos, sem garantia de rentabilidade. Resultados reais podem variar conforme mercado. Fontes: Estudo de Viabilidade ON Resort Cidade Jardim, Charlie (jul/2026); AirDNA (Studio + 1D). Premissas: condomínio R$ 14/m², IPTU R$ 4/m², mix de 75% a 90% em curta temporada e o restante em locação mensal com 98% de ocupação. Não considera imposto de renda sobre os aluguéis nem custos de mobília e enxoval. Valores mensais estimados para a operação estabilizada.</p>
+    <div class="agora reveal">
+      <div class="agora__head">
+        <p class="eyebrow">Por que agir agora</p>
+        <h3>Quem entra primeiro escolhe melhor.</h3>
+      </div>
+      <ol class="agora__list">
+        <li><b>Tabela de lançamento</b><span>Comprar na planta é o momento de entrada com as condições de pagamento mais flexíveis.</span></li>
+        <li><b>Só 34 gardens</b><span>Em 1.306 unidades, apenas 34 têm terraço privativo com previsão de piscina.</span></li>
+        <li><b>As melhores posições saem primeiro</b><span>Andares altos e vista para o Parque Linear costumam ser escolhidos logo nos primeiros dias.</span></li>
+      </ol>
+      <a href="#contato" class="btn btn--accent">Quero garantir a minha</a>
+    </div>
+    <p class="note">*Estudo de viabilidade Charlie (jul/2026), cenário base, com base em dados de mercado (AirDNA). Projeção baseada em dados históricos, sem garantia de rentabilidade. Resultados reais podem variar conforme mercado.</p>
   </div>
 </section>
-
 
 <!-- ============ INVESTIR ============ -->
 <section class="section investir" id="investir">
@@ -230,17 +160,13 @@
     <div class="section__head reveal">
       <p class="eyebrow eyebrow--light">Por que investir</p>
       <h2 class="h2">Um ativo de renda com a solidez de um <em>RJZ Cyrela.</em></h2>
-      <p class="lead lead--light">Ticket de entrada compacto, demanda de turismo e eventos o ano todo e uma operação de hotel por trás de cada unidade. É isso que transforma o ON Resort em renda recorrente.</p>
+      <p class="lead lead--light">Ticket de entrada compacto, demanda de turismo o ano todo e uma operação de hotel por trás de cada unidade.</p>
     </div>
-    <div class="pillars">
-      <article class="pillar reveal"><span>01</span><h3>Padrão de hospitalidade internacional</h3><p>Espaços pensados para o maior conforto, bem-estar e convívio de moradores e visitantes.</p></article>
-      <article class="pillar reveal"><span>02</span><h3>Projeto Airbnb-friendly³</h3><p>O ON Resort conta com a colaboração do Airbnb. Anuncie sua unidade e ofereça a melhor experiência ao hóspede.</p></article>
-      <article class="pillar reveal"><span>03</span><h3>Renda desde o primeiro hóspede</h3><p>Unidades compactas, de ticket menor e diária competitiva, desenhadas para maximizar a renda por m².²</p></article>
-      <article class="pillar reveal"><span>04</span><h3>Zero trabalho para você</h3><p>Gestão profissional cuida de anúncio, preço, check-in, limpeza e manutenção. Você acompanha a renda.</p></article>
-      <article class="pillar reveal"><span>05</span><h3>Potencial de valorização²</h3><p>Barra Olímpica em ciclo de expansão, impulsionada por eventos e infraestrutura, com oferta limitada de compactos de alta liquidez.</p></article>
-      <article class="pillar reveal"><span>06</span><h3>Lazer de resort, diária maior</h3><p>Mais de 5 mil m² de lazer, pool bar e café da manhã: diferenciais que o hóspede paga para ter.</p></article>
-      <article class="pillar reveal"><span>07</span><h3>Segurança de bairro planejado</h3><p>Segurança 24h com câmeras, guaritas e monitoramento da associação de moradores.</p></article>
-      <article class="pillar reveal"><span>08</span><h3>Solidez da marca</h3><p>Invista junto a uma das maiores e mais tradicionais incorporadoras do país.</p></article>
+    <div class="pillars pillars--4">
+      <article class="pillar reveal"><span>01</span><h3>Projeto Airbnb-friendly³</h3><p>Nasceu para receber hóspedes, com a colaboração do Airbnb.</p></article>
+      <article class="pillar reveal"><span>02</span><h3>Zero trabalho para você</h3><p>Gestão profissional cuida de tudo. Você acompanha a renda.</p></article>
+      <article class="pillar reveal"><span>03</span><h3>Potencial de valorização²</h3><p>Barra Olímpica em plena expansão, com oferta limitada de compactos.</p></article>
+      <article class="pillar reveal"><span>04</span><h3>Solidez RJZ Cyrela</h3><p>Uma das maiores e mais tradicionais incorporadoras do país.</p></article>
     </div>
     <p class="note note--light">²Informações de caráter meramente mercadológico, não representando garantia de desempenho econômico futuro. ³As atividades dos anfitriões estão sujeitas às leis e restrições locais. O Airbnb apenas licencia o uso da marca. A RJZ Cyrela é a única responsável pelo desenvolvimento, incorporação, construção, comercialização, entrega e pós-venda do empreendimento.</p>
   </div>
@@ -388,7 +314,7 @@
         <p class="plan__tower">Ed. Polinésia · 2º ao 15º pavimento</p>
         <h3>Studios de 32 a 33 m²</h3>
         <p>Plantas compactas e inteligentes, com varanda, ideais para morar com praticidade ou para locação de curta temporada.</p>
-        <p class="plan__yield"><span>Renda líquida estimada*</span><b>R$ 4.824/mês</b><a href="#rentabilidade">Simular</a></p>
+        <p class="plan__yield"><span>Renda líquida estimada*</span><b>R$ 4.824/mês</b><a href="#" data-whatsapp data-origem="planta" data-mensagem="Quero receber o estudo de rentabilidade e a tabela do ON Resort.">Ver estudo</a></p>
         <ul class="plan__specs"><li><b>714</b> unidades</li><li>Varanda</li><li>Ducha higiênica</li><li>Infra para ar-condicionado</li></ul>
         <img class="plan__decor" src="assets/img/studio-polinesia.jpg" alt="Studio decorado do Ed. Polinésia" loading="lazy">
         <a href="#contato" class="btn btn--dark" data-interesse="Studio 32m²">Quero valores do studio</a>
@@ -404,7 +330,7 @@
         <p class="plan__tower">Ed. Caribe · 2º ao 15º pavimento</p>
         <h3>Studio ou 1 quarto de 39 a 40 m²</h3>
         <p>Você escolhe a configuração: studio integrado ou sala e quarto separados. Varanda com previsão para kit de bancada e churrasqueira elétrica.</p>
-        <p class="plan__yield"><span>Renda líquida estimada*</span><b>R$ 5.264/mês</b><a href="#rentabilidade">Simular</a></p>
+        <p class="plan__yield"><span>Renda líquida estimada*</span><b>R$ 5.264/mês</b><a href="#" data-whatsapp data-origem="planta" data-mensagem="Quero receber o estudo de rentabilidade e a tabela do ON Resort.">Ver estudo</a></p>
         <ul class="plan__specs"><li><b>306</b> unidades</li><li>Varanda gourmet</li><li>Opção 1 quarto</li><li>Laje técnica</li></ul>
         <img class="plan__decor" src="assets/img/studio-caribe.jpg" alt="Apartamento decorado do Ed. Caribe" loading="lazy">
         <a href="#contato" class="btn btn--dark" data-interesse="Studio ou 1Q 39m²">Quero valores do 1 quarto</a>
@@ -420,7 +346,7 @@
         <p class="plan__tower">Ed. Fiji · 2º ao 15º pavimento</p>
         <h3>2 quartos de 59 a 60 m²</h3>
         <p>Espaço para a família, com suíte, varanda e cozinha com infraestrutura para máquina de lavar louça (em colunas selecionadas).</p>
-        <p class="plan__yield"><span>Renda líquida estimada*</span><b>R$ 6.295/mês</b><a href="#rentabilidade">Simular</a></p>
+        <p class="plan__yield"><span>Renda líquida estimada*</span><b>R$ 6.295/mês</b><a href="#" data-whatsapp data-origem="planta" data-mensagem="Quero receber o estudo de rentabilidade e a tabela do ON Resort.">Ver estudo</a></p>
         <ul class="plan__specs"><li><b>252</b> unidades</li><li>Suíte</li><li>Varanda</li><li>4 elevadores</li></ul>
         <img class="plan__decor" src="assets/img/fiji-sala.jpg" alt="Sala do 2 quartos decorado do Ed. Fiji" loading="lazy">
         <a href="#contato" class="btn btn--dark" data-interesse="2 quartos 60m²">Quero valores do 2 quartos</a>
@@ -436,39 +362,14 @@
         <p class="plan__tower">1º pavimento · Ed. Caribe, Fiji e Polinésia</p>
         <h3>Gardens de 52 a 92 m² com terraço e previsão de piscina</h3>
         <p>Terraços descobertos com previsão para kit piscina com deck e chuveiro, alguns com vista para o Parque Linear. Apenas 34 unidades.</p>
-        <p class="plan__yield"><span>Renda líquida estimada*</span><b>R$ 5.316 a R$ 7.500/mês</b><a href="#rentabilidade">Simular</a></p>
+        <p class="plan__yield"><span>Renda líquida estimada*</span><b>R$ 5.316 a R$ 7.500/mês</b><a href="#" data-whatsapp data-origem="planta" data-mensagem="Quero receber o estudo de rentabilidade e a tabela do ON Resort.">Ver estudo</a></p>
         <ul class="plan__specs"><li>Studio · 52–55 m²</li><li>Studio ou 1Q · 52–55 m²</li><li>2 quartos · 87–92 m²</li><li>Terraço privativo</li></ul>
         <img class="plan__decor" src="assets/img/garden-terraco.jpg" alt="Terraço com piscina de garden" loading="lazy">
         <a href="#contato" class="btn btn--dark" data-interesse="Garden">Quero valores dos gardens</a>
       </div>
     </article>
 
-    <div class="preference reveal">
-      <div>
-        <p class="eyebrow">Preference Cyrela</p>
-        <h3>Personalize seu apartamento e potencialize seu investimento.</h3>
-      </div>
-      <p>Opções de plantas e acabamentos, fechadura biométrica, olho mágico digital, kits de bancada e churrasqueira elétrica, kit piscina, deck, ar-condicionado, box e muito mais, contratados direto com a construtora, com garantia e pagamento parcelado.</p>
-    </div>
     <p class="note">*Cenário base do estudo de viabilidade Charlie (jul/2026), sem garantia de rentabilidade; no studio ou 1 quarto do Ed. Caribe, referência do 1 quarto de 39 m². Plantas humanizadas ilustrativas, com sugestão de decoração. Móveis e utensílios não fazem parte do contrato. Metragens referentes à área privativa.</p>
-  </div>
-</section>
-
-<!-- ============ MASTERPLAN ============ -->
-<section class="section masterplan">
-  <div class="container masterplan__grid">
-    <figure class="masterplan__img reveal">
-      <img src="assets/img/masterplan.jpg" alt="Masterplan do ON Resort Cidade Jardim" loading="lazy" data-zoom>
-      <figcaption>Toque para ampliar</figcaption>
-    </figure>
-    <div class="reveal">
-      <p class="eyebrow">Masterplan</p>
-      <h2 class="h2">Cada espaço pensado para todos os momentos.</h2>
-      <ul class="masterplan__list">
-        <li>Lobby e lounges</li><li>Massage space</li><li>Sauna úmida</li><li>Repouso com spa</li><li>Coworking</li><li>Laundry</li><li>Cokitchen</li><li>Taste lounge</li><li>Fast market</li><li>Espaço ferramentas</li><li>Fitness</li><li>Brinquedoteca</li><li>Espaço jogos</li><li>Festas e lounge festas</li><li>Pool houses com terraço e piscina</li><li>Playground</li><li>Quadra recreativa</li><li>Quadra de areia</li><li>Churrasqueira gourmet</li><li>Pool bar</li><li>Solário</li><li>Relax lounge</li><li>Deck molhado</li><li>Piscina infantil</li><li>Piscina com raia de 25 m</li><li>Gazebos e daybeds</li><li>Pool lounge</li><li>Bicicletário</li><li>Acesso ao Parque Linear*</li>
-      </ul>
-      <p class="note">*O Parque Linear é uma área pública mantida pela ASCIJA e não faz parte do condomínio ON Resort Cidade Jardim.</p>
-    </div>
   </div>
 </section>
 
@@ -530,46 +431,6 @@
       </ul>
       <p class="local__addr"><b>Endereço:</b> Av. Vice-Presidente José Alencar, 1.305 – Barra Olímpica, Rio de Janeiro – RJ</p>
     </div>
-    <div class="local__embed reveal">
-      <iframe title="Mapa do ON Resort Cidade Jardim" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-        src="https://maps.google.com/maps?q=Av.%20Vice-Presidente%20Jos%C3%A9%20Alencar%2C%201305%20-%20Barra%20Ol%C3%ADmpica%2C%20Rio%20de%20Janeiro&z=15&output=embed"></iframe>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FICHA TÉCNICA ============ -->
-<section class="section ficha">
-  <div class="container ficha__grid">
-    <div class="reveal">
-      <p class="eyebrow">Ficha técnica</p>
-      <h2 class="h2">Detalhes do projeto.</h2>
-      <img src="assets/img/fiji-suite.jpg" alt="Suíte decorada do Ed. Fiji" loading="lazy" class="ficha__img">
-    </div>
-    <div class="reveal">
-      <dl class="ficha__list">
-        <div><dt>Endereço</dt><dd>Av. Vice-Presidente José Alencar, 1.305 – Barra Olímpica, RJ</dd></div>
-        <div><dt>Terreno</dt><dd>14.576,63 m²</dd></div>
-        <div><dt>Unidades</dt><dd>1.306 — Ed. Caribe (319), Ed. Fiji (258), Ed. Polinésia (729)</dd></div>
-        <div><dt>Tipologias</dt><dd>Studios 32–33 m² · Studio ou 1Q 39–40 m² · 2Q 59–60 m² · Gardens 52–92 m²</dd></div>
-        <div><dt>Pavimentos</dt><dd>Subsolo, térreo, 1º pavimento (lazer e gardens) e 2º ao 15º (apartamentos)</dd></div>
-        <div><dt>Elevadores</dt><dd>Caribe: 3 · Fiji: 4 · Polinésia: 4</dd></div>
-        <div><dt>Estacionamento</dt><dd>254 vagas cobertas no subsolo, 51 descobertas no térreo e 22 para visitantes</dd></div>
-        <div><dt>Realização</dt><dd>RJZ Cyrela e Leblon Realty</dd></div>
-        <div><dt>Arquitetura e fachada</dt><dd>Afonso Kuenerz Arquitetura</dd></div>
-        <div><dt>Paisagismo</dt><dd>Benedito Abbud Arquitetura Paisagística</dd></div>
-        <div><dt>Decoração</dt><dd>Studio RO+CA</dd></div>
-      </dl>
-      <details class="acc">
-        <summary>Sustentabilidade, segurança e acessibilidade</summary>
-        <ul>
-          <li>Coleta seletiva, iluminação com sensores nos halls e bacias com duplo acionamento</li>
-          <li>Irrigação automática de jardins e redutores de vazão nas áreas comuns</li>
-          <li>Tomadas para recarga de carros e bicicletas elétricas</li>
-          <li>Controle de acessos 24h, CFTV com central de monitoramento e segurança perimetral com sensores</li>
-          <li>Acesso PCD às áreas comuns, vagas PCD e lavabos acessíveis</li>
-        </ul>
-      </details>
-    </div>
   </div>
 </section>
 
@@ -579,14 +440,14 @@
   <div class="contato__shade"></div>
   <div class="container contato__grid">
     <div class="contato__copy">
-      <p class="eyebrow eyebrow--light">Condições de lançamento</p>
-      <h2 class="h2">Os números estão na mesa. <em>Escolha a sua unidade.</em></h2>
-      <p>Receba a tabela de preços, o estudo de rentabilidade completo e simule seu retorno com um especialista. No lançamento, as unidades com melhor posição e preço costumam ser as primeiras a sair.</p>
-      <ul class="contato__list"><li>Tabela de lançamento e condições de pagamento</li><li>Estudo de viabilidade completo, por tipologia</li><li>Simulação de retorno sobre o seu valor de compra</li></ul>
-      <a class="btn btn--whats" data-whatsapp href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.7-.6 13.4 13.4 0 0 1-5.2-4.6c-.4-.5-1.1-1.6-1.1-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.3.5-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.6 2.1 1.1 1 2.1 1.3 2.4 1.4.3.2.5.1.6 0l.9-1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.1 1.5Z"/></svg> Falar no WhatsApp</a>
+      <p class="eyebrow eyebrow--light">Condições exclusivas de lançamento</p>
+      <h2 class="h2">As melhores unidades saem primeiro. <em>Garanta a sua.</em></h2>
+      <p>Fale direto com o corretor e receba tudo no seu WhatsApp, antes de a tabela de lançamento mudar.</p>
+      <ul class="contato__list"><li>Tabela de lançamento e condições de pagamento</li><li>Estudo de rentabilidade completo, por tipologia</li><li>Atendimento direto com o corretor</li></ul>
+      <a class="btn btn--whats" data-whatsapp href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.7-.6 13.4 13.4 0 0 1-5.2-4.6c-.4-.5-1.1-1.6-1.1-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.3.5-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.6 2.1 1.1 1 2.1 1.3 2.4 1.4.3.2.5.1.6 0l.9-1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.1 1.5Z"/></svg> Quero falar com o corretor</a>
     </div>
     <form class="lead-form" id="formFooter" novalidate data-origem="rodape">
-      <h2 class="lead-form__title">Receba o estudo e a tabela</h2>
+      <h2 class="lead-form__title">Receba a tabela e o estudo completo</h2>
       <label class="field"><span>Nome</span><input name="nome" type="text" autocomplete="name" required placeholder="Seu nome"></label>
       <label class="field"><span>WhatsApp</span><input name="telefone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="(21) 99999-9999"></label>
       <label class="field"><span>E-mail</span><input name="email" type="email" autocomplete="email" required placeholder="voce@email.com"></label>
@@ -608,7 +469,7 @@
       </fieldset>
       <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="consent"><input type="checkbox" name="consentimento" required> <span>Aceito receber contato e concordo com a <a href="#privacidade">política de privacidade</a>.</span></label>
-      <button class="btn btn--accent btn--block" type="submit">Quero receber o estudo</button>
+      <button class="btn btn--accent btn--block" type="submit">Quero receber agora</button>
       <p class="lead-form__msg" role="status" aria-live="polite"></p>
     </form>
   </div>
@@ -640,7 +501,7 @@
 <!-- WhatsApp flutuante + barra mobile -->
 <a class="whats-float" data-whatsapp href="#" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.7-.6 13.4 13.4 0 0 1-5.2-4.6c-.4-.5-1.1-1.6-1.1-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.3.5-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.6 2.1 1.1 1 2.1 1.3 2.4 1.4.3.2.5.1.6 0l.9-1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.1 1.5Z"/></svg></a>
 <div class="mobile-bar">
-  <a href="#contato" class="btn btn--accent">Estudo de renda</a>
+  <a href="#contato" class="btn btn--accent">Tabela de lançamento</a>
   <a data-whatsapp href="#" class="btn btn--whats">WhatsApp</a>
 </div>
 
@@ -684,6 +545,5 @@
 
 <script src="assets/js/config.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="assets/js/simulador.js"></script>
 </body>
 </html>

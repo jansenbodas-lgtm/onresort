@@ -13,15 +13,19 @@
     return "https://wa.me/" + (CFG.whatsapp || "") + "?text=" + encodeURIComponent(msg || CFG.mensagemWhatsApp || "");
   };
   // Os links de WhatsApp abrem o popup de captura; o href fica como fallback sem JS
+  var MSG_CORRETOR = "Quero falar com o corretor.";
   $$("[data-whatsapp]").forEach(function (a) {
-    a.href = waLink();
+    var fixo = a.classList.contains("whats-float") || !!a.closest(".mobile-bar") || !!a.closest(".contato__copy") || !!a.closest(".footer");
+    // botões fixos/estáticos do WhatsApp sempre enviam "Quero falar com o corretor."
+    var mensagem = a.getAttribute("data-mensagem") || (fixo ? MSG_CORRETOR : "");
+    a.href = waLink(mensagem || undefined);
     a.target = "_blank";
     a.rel = "noopener";
     a.addEventListener("click", function (e) {
       e.preventDefault();
       track("whatsapp_click");
       openWaModal(a.getAttribute("data-origem") || (a.classList.contains("whats-float") ? "whatsapp-flutuante" : a.closest(".mobile-bar") ? "whatsapp-barra-mobile" : a.closest(".footer") ? "whatsapp-rodape" : "whatsapp-contato"),
-        (a.textContent || "").trim() || a.getAttribute("aria-label") || "WhatsApp");
+        (a.textContent || "").trim() || a.getAttribute("aria-label") || "WhatsApp", mensagem);
     });
   });
   $$("[data-creci-line]").forEach(function (el) { el.hidden = !CFG.creci; });
@@ -209,10 +213,11 @@
   }
 
   /* ---------- Popup do WhatsApp ---------- */
-  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "whatsapp", waCta = "", lastFocus = null;
-  function openWaModal(origem, cta) {
+  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "whatsapp", waCta = "", waMsg = "", lastFocus = null;
+  function openWaModal(origem, cta, mensagem) {
     waOrigem = origem || "whatsapp";
     waCta = cta || "";
+    waMsg = mensagem || "";
     var saved = recall();
     if (saved) ["nome", "telefone", "email", "interesse"].forEach(function (k) { if (saved[k] && !waForm[k].value) waForm[k].value = saved[k]; });
     var pre = document.querySelector('#formFooter select[name="interesse"]');
@@ -240,9 +245,9 @@
     sendLead(lead).catch(function () {});
     track("lead_submit", { origem: lead.origem, interesse: lead.interesse });
     // 2) abre o WhatsApp já com a mensagem pronta
-    var txt = "Olá! Sou " + lead.nome + " e tenho interesse no ON Resort Cidade Jardim" +
+    var txt = waMsg || ("Olá! Sou " + lead.nome + " e tenho interesse no ON Resort Cidade Jardim" +
       (lead.interesse && lead.interesse !== "Ainda não sei" ? " (" + lead.interesse + ")" : "") +
-      ". Gostaria de receber a tabela e o estudo de rentabilidade.";
+      ". Gostaria de receber a tabela e o estudo de rentabilidade.");
     var url = waLink(txt);
     var w = window.open(url, "_blank", "noopener");
     if (!w) location.href = url;

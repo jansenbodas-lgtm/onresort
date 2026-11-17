@@ -33,29 +33,48 @@
     var sec = secaoDe(el), txt = textoBotao(el);
     return /Botão flutuante|Barra fixa|Rodapé/.test(sec) ? sec : sec + " · botão “" + txt + "”";
   }
-  function mensagemPadrao(origem, lead) {
-    var linhas = ["Quero falar com o corretor.", "Origem: " + origem];
-    if (lead && lead.nome) linhas.push("Nome: " + lead.nome);
-    if (lead && lead.interesse && lead.interesse !== "Ainda não sei") linhas.push("Interesse: " + lead.interesse);
-    if (lead && lead.objetivo) linhas.push("Objetivo: " + lead.objetivo);
-    return linhas.join("\n");
+  // Transforma o texto do botão no que o lead quer: "Liberar o estudo completo" -> "liberar o estudo completo"
+  var ACOES_ESPECIAIS = {
+    "quero garantir a minha": "garantir a minha unidade",
+    "quero receber agora": "receber a tabela e o estudo completo",
+    "tabela de lançamento": "a tabela de lançamento",
+    "falar no whatsapp": "falar com o corretor",
+    "whatsapp": "falar com o corretor"
+  };
+  function acaoDe(el) {
+    if (el.closest(".whats-float") || el.closest(".footer")) return "falar com o corretor";
+    var txt = textoBotao(el), chave = txt.toLowerCase();
+    if (chave === "ver estudo") {
+      var plan = el.closest(".plan");
+      var nomes = { studio: "do studio", caribe: "do studio ou 1 quarto", fiji: "do 2 quartos", gardens: "dos gardens" };
+      return "ver o estudo de rentabilidade" + (plan && nomes[plan.getAttribute("data-panel")] ? " " + nomes[plan.getAttribute("data-panel")] : "");
+    }
+    if (ACOES_ESPECIAIS[chave]) return ACOES_ESPECIAIS[chave];
+    var acao = txt.replace(/^quero\s+/i, "");
+    return acao.charAt(0).toLowerCase() + acao.slice(1);
+  }
+  // Mensagem padrão: "Olá, meu nome é Fulano, telefone X, e-mail Y, e quero <ação do botão>."
+  function mensagemPadrao(acao, lead) {
+    if (!lead || !lead.nome) return "Olá, quero " + acao + ".";
+    return "Olá, meu nome é " + lead.nome + ", telefone " + lead.telefone +
+      (lead.email ? ", e-mail " + lead.email : "") + ", e quero " + acao + ".";
   }
   // último botão clicado que leva ao formulário de contato (para saber de onde veio)
-  var ultimoCta = "";
+  var ultimoCta = null;
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest('a[href="#contato"]');
-    if (a) ultimoCta = origemDe(a);
+    if (a) ultimoCta = { origem: origemDe(a), acao: acaoDe(a) };
   });
 
   // Os links de WhatsApp abrem o popup de captura; o href fica como fallback sem JS
   $$("[data-whatsapp]").forEach(function (a) {
-    a.href = waLink(mensagemPadrao(origemDe(a)));
+    a.href = waLink(mensagemPadrao(acaoDe(a)));
     a.target = "_blank";
     a.rel = "noopener";
     a.addEventListener("click", function (e) {
       e.preventDefault();
       track("whatsapp_click", { origem: origemDe(a) });
-      openWaModal(origemDe(a), textoBotao(a));
+      openWaModal(origemDe(a), textoBotao(a), acaoDe(a));
     });
   });
   $$("[data-creci-line]").forEach(function (el) { el.hidden = !CFG.creci; });
@@ -243,10 +262,11 @@
   }
 
   /* ---------- Popup do WhatsApp ---------- */
-  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "WhatsApp", waCta = "", lastFocus = null;
-  function openWaModal(origem, cta) {
+  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "WhatsApp", waCta = "", waAcao = "falar com o corretor", lastFocus = null;
+  function openWaModal(origem, cta, acao) {
     waOrigem = origem || "WhatsApp";
     waCta = cta || "";
+    waAcao = acao || "falar com o corretor";
     var saved = recall();
     if (saved) ["nome", "telefone", "email", "interesse"].forEach(function (k) { if (saved[k] && !waForm[k].value) waForm[k].value = saved[k]; });
     var pre = document.querySelector('#formFooter select[name="interesse"]');
@@ -274,7 +294,7 @@
     sendLead(lead).catch(function () {});
     track("lead_submit", { origem: lead.origem, interesse: lead.interesse });
     // 2) abre o WhatsApp já com a mensagem pronta
-    var url = waLink(mensagemPadrao(waOrigem, lead));
+    var url = waLink(mensagemPadrao(waAcao, lead));
     var w = window.open(url, "_blank", "noopener");
     if (!w) location.href = url;
     msg.classList.add("is-ok"); msg.textContent = "Abrindo o WhatsApp…";
@@ -288,15 +308,18 @@
       e.preventDefault();
       msg.className = "lead-form__msg"; msg.textContent = "";
       if (!validate(form, false)) { msg.classList.add("is-err"); msg.textContent = "Confira os campos destacados."; return; }
+      var btnForm = form.querySelector('button[type="submit"]');
       var origem = secaoDe(form) + " · formulário";
-      if (form.id === "formFooter" && ultimoCta) origem += " (veio de: " + ultimoCta + ")";
+      var acao = acaoDe(btnForm);
+      // se o cliente chegou ao formulário de contato por um botão, vale a ação daquele botão
+      if (form.id === "formFooter" && ultimoCta) { origem += " (veio de: " + ultimoCta.origem + ")"; acao = ultimoCta.acao; }
       var lead = buildLead(form, origem);
       remember(lead);
       // 1) grava o lead no CRM (keepalive: chega mesmo com a ida para o WhatsApp)
       sendLead(lead).catch(function () {});
       track("lead_submit", { origem: lead.origem, objetivo: lead.objetivo });
       // 2) leva o cliente para o WhatsApp com a mensagem pronta
-      var url = waLink(mensagemPadrao(origem, lead));
+      var url = waLink(mensagemPadrao(acao, lead));
       var w = window.open(url, "_blank", "noopener");
       if (!w) location.href = url;
       msg.classList.add("is-ok");

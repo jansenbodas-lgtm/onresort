@@ -92,10 +92,10 @@ async function createLead(request, env, admin, ctx) {
   const email = clean(b.email, 160);
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return json({ ok: false, error: "E-mail inválido." }, 400);
 
-  const origem = clean(b.origem, 60) || (admin ? "manual" : "site");
+  const origem = clean(b.origem, 160) || (admin ? "manual" : "site");
   const cta = clean(b.cta, 120);
   const interesse = clean(b.interesse, 80);
-  const via = admin && origem === "manual" ? "cadastro manual" : `site · ${origem}${cta ? ` · botão “${cta}”` : ""}`;
+  const via = admin && origem === "manual" ? "cadastro manual" : `site · ${origem}`;
 
   const dup = await env.DB.prepare("SELECT id FROM leads WHERE telefone_digitos = ? ORDER BY id DESC LIMIT 1").bind(digits).first();
   if (dup) {

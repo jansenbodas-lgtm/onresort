@@ -12,20 +12,50 @@
   var waLink = function (msg) {
     return "https://wa.me/" + (CFG.whatsapp || "") + "?text=" + encodeURIComponent(msg || CFG.mensagemWhatsApp || "");
   };
+  /* ---------- Origem padronizada: seção + botão ----------
+   * Toda mensagem de WhatsApp segue o mesmo formato, para o corretor saber
+   * de onde o lead veio. O mesmo rótulo é gravado no CRM (campo origem).   */
+  var SECOES = { hero: "Topo", oportunidade: "Oportunidade", investir: "Por que investir", lazer: "Lazer",
+    servicos: "Serviços", plantas: "Plantas", bairro: "Cidade Jardim", localizacao: "Localização", contato: "Contato" };
+  function secaoDe(el) {
+    if (el.closest(".whats-float")) return "Botão flutuante do WhatsApp";
+    if (el.closest(".mobile-bar")) return "Barra fixa do celular";
+    if (el.closest(".footer")) return "Rodapé";
+    if (el.closest(".header")) return "Menu do topo";
+    var sec = el.closest("section");
+    var nome = sec ? (SECOES[sec.id] || (sec.classList.contains("hero") ? "Topo" : sec.id || "Página")) : "Página";
+    var plan = el.closest(".plan");
+    if (plan && plan.querySelector("h3")) nome += " · " + plan.querySelector("h3").textContent.trim();
+    return nome;
+  }
+  function textoBotao(el) { return ((el.textContent || "").trim() || el.getAttribute("aria-label") || "WhatsApp").replace(/\s+/g, " "); }
+  function origemDe(el) {
+    var sec = secaoDe(el), txt = textoBotao(el);
+    return /Botão flutuante|Barra fixa|Rodapé/.test(sec) ? sec : sec + " · botão “" + txt + "”";
+  }
+  function mensagemPadrao(origem, lead) {
+    var linhas = ["Quero falar com o corretor.", "Origem: " + origem];
+    if (lead && lead.nome) linhas.push("Nome: " + lead.nome);
+    if (lead && lead.interesse && lead.interesse !== "Ainda não sei") linhas.push("Interesse: " + lead.interesse);
+    if (lead && lead.objetivo) linhas.push("Objetivo: " + lead.objetivo);
+    return linhas.join("\n");
+  }
+  // último botão clicado que leva ao formulário de contato (para saber de onde veio)
+  var ultimoCta = "";
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href="#contato"]');
+    if (a) ultimoCta = origemDe(a);
+  });
+
   // Os links de WhatsApp abrem o popup de captura; o href fica como fallback sem JS
-  var MSG_CORRETOR = "Quero falar com o corretor.";
   $$("[data-whatsapp]").forEach(function (a) {
-    var fixo = a.classList.contains("whats-float") || !!a.closest(".mobile-bar") || !!a.closest(".contato__copy") || !!a.closest(".footer");
-    // botões fixos/estáticos do WhatsApp sempre enviam "Quero falar com o corretor."
-    var mensagem = a.getAttribute("data-mensagem") || (fixo ? MSG_CORRETOR : "");
-    a.href = waLink(mensagem || undefined);
+    a.href = waLink(mensagemPadrao(origemDe(a)));
     a.target = "_blank";
     a.rel = "noopener";
     a.addEventListener("click", function (e) {
       e.preventDefault();
-      track("whatsapp_click");
-      openWaModal(a.getAttribute("data-origem") || (a.classList.contains("whats-float") ? "whatsapp-flutuante" : a.closest(".mobile-bar") ? "whatsapp-barra-mobile" : a.closest(".footer") ? "whatsapp-rodape" : "whatsapp-contato"),
-        (a.textContent || "").trim() || a.getAttribute("aria-label") || "WhatsApp", mensagem);
+      track("whatsapp_click", { origem: origemDe(a) });
+      openWaModal(origemDe(a), textoBotao(a));
     });
   });
   $$("[data-creci-line]").forEach(function (el) { el.hidden = !CFG.creci; });
@@ -213,11 +243,10 @@
   }
 
   /* ---------- Popup do WhatsApp ---------- */
-  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "whatsapp", waCta = "", waMsg = "", lastFocus = null;
-  function openWaModal(origem, cta, mensagem) {
-    waOrigem = origem || "whatsapp";
+  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "WhatsApp", waCta = "", lastFocus = null;
+  function openWaModal(origem, cta) {
+    waOrigem = origem || "WhatsApp";
     waCta = cta || "";
-    waMsg = mensagem || "";
     var saved = recall();
     if (saved) ["nome", "telefone", "email", "interesse"].forEach(function (k) { if (saved[k] && !waForm[k].value) waForm[k].value = saved[k]; });
     var pre = document.querySelector('#formFooter select[name="interesse"]');
@@ -245,10 +274,7 @@
     sendLead(lead).catch(function () {});
     track("lead_submit", { origem: lead.origem, interesse: lead.interesse });
     // 2) abre o WhatsApp já com a mensagem pronta
-    var txt = waMsg || ("Olá! Sou " + lead.nome + " e tenho interesse no ON Resort Cidade Jardim" +
-      (lead.interesse && lead.interesse !== "Ainda não sei" ? " (" + lead.interesse + ")" : "") +
-      ". Gostaria de receber a tabela e o estudo de rentabilidade.");
-    var url = waLink(txt);
+    var url = waLink(mensagemPadrao(waOrigem, lead));
     var w = window.open(url, "_blank", "noopener");
     if (!w) location.href = url;
     msg.classList.add("is-ok"); msg.textContent = "Abrindo o WhatsApp…";
@@ -262,19 +288,15 @@
       e.preventDefault();
       msg.className = "lead-form__msg"; msg.textContent = "";
       if (!validate(form, false)) { msg.classList.add("is-err"); msg.textContent = "Confira os campos destacados."; return; }
-      var lead = buildLead(form, form.getAttribute("data-origem"));
+      var origem = secaoDe(form) + " · formulário";
+      if (form.id === "formFooter" && ultimoCta) origem += " (veio de: " + ultimoCta + ")";
+      var lead = buildLead(form, origem);
       remember(lead);
       // 1) grava o lead no CRM (keepalive: chega mesmo com a ida para o WhatsApp)
       sendLead(lead).catch(function () {});
       track("lead_submit", { origem: lead.origem, objetivo: lead.objetivo });
       // 2) leva o cliente para o WhatsApp com a mensagem pronta
-      var detalhes = [];
-      if (lead.interesse && lead.interesse !== "Ainda não sei") detalhes.push("tipologia: " + lead.interesse);
-      if (lead.objetivo) detalhes.push("objetivo: " + lead.objetivo.toLowerCase());
-      var txt = "Olá! Sou " + lead.nome + " e tenho interesse no ON Resort Cidade Jardim" +
-        (detalhes.length ? " (" + detalhes.join(", ") + ")" : "") +
-        ". Gostaria de receber a tabela de lançamento e o estudo de rentabilidade.";
-      var url = waLink(txt);
+      var url = waLink(mensagemPadrao(origem, lead));
       var w = window.open(url, "_blank", "noopener");
       if (!w) location.href = url;
       msg.classList.add("is-ok");

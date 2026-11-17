@@ -5,11 +5,11 @@
  * telefoneExibicao:  como o número aparece no rodapé
  * corretorNome/imobiliaria/creci: identificação no rodapé (o CRECI some se ficar vazio)
  * formEndpoint:      URL que recebe os leads via POST (JSON). Padrão: o CRM próprio
- *                    em /api/leads (Cloudflare Pages Functions + D1). Painel em /crm.
+ *                    em /api/leads (Worker onresort + D1). Painel em /admin.
  */
 window.ONRESORT_CONFIG = {
-  whatsapp: "5521996903909",
-  telefoneExibicao: "(21) 99690-3909",
+  whatsapp: "5521996909909",
+  telefoneExibicao: "(21) 99690-9909",
   corretorNome: "Rafael Bodas",
   imobiliaria: "JBI",
   creci: "",

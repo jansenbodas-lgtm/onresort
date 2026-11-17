@@ -82,7 +82,20 @@
   function track(event, data) {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(Object.assign({ event: event }, data || {}));
-    if (typeof window.fbq === "function" && event === "lead_submit") window.fbq("track", "Lead");
+  }
+  // Meta: identificadores do navegador e evento Lead com o mesmo event_id do servidor (deduplicação)
+  function cookie(n) { var m = document.cookie.match(new RegExp("(?:^|; )" + n + "=([^;]*)")); return m ? decodeURIComponent(m[1]) : ""; }
+  function metaIds() {
+    var fbc = cookie("_fbc"), fbclid = new URLSearchParams(location.search).get("fbclid");
+    if (!fbc && fbclid) fbc = "fb.1." + Date.now() + "." + fbclid;
+    return { fbp: cookie("_fbp"), fbc: fbc, event_id: "lead_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10) };
+  }
+  function pixelLead(lead) {
+    if (typeof window.fbq !== "function") return;
+    var data = { content_name: "ON Resort Cidade Jardim", content_category: "Imóvel - lançamento" };
+    if (lead.interesse) data.interesse = lead.interesse;
+    if (lead.objetivo) data.objetivo = lead.objetivo;
+    window.fbq("track", "Lead", data, { eventID: lead.event_id });
   }
 
   /* ---------- Header ---------- */
@@ -234,7 +247,7 @@
       website: form.website ? form.website.value : "",
       origem: origem, cta: cta || (btn ? btn.textContent.trim() : ""),
       pagina: location.href, referrer: document.referrer
-    }, utm());
+    }, metaIds(), utm());
   }
   // keepalive garante a entrega mesmo que a pessoa saia da página (ex.: indo para o WhatsApp)
   function sendLead(lead) {
@@ -291,6 +304,7 @@
     remember(lead);
     // 1) grava o lead no CRM (independe de a conversa ser concluída)
     sendLead(lead).catch(function () {});
+    pixelLead(lead);
     track("lead_submit", { origem: lead.origem, interesse: lead.interesse });
     // 2) abre o WhatsApp já com a mensagem pronta
     var url = waLink(mensagemPadrao(waAcao, lead));
@@ -316,6 +330,7 @@
       remember(lead);
       // 1) grava o lead no CRM (keepalive: chega mesmo com a ida para o WhatsApp)
       sendLead(lead).catch(function () {});
+    pixelLead(lead);
       track("lead_submit", { origem: lead.origem, objetivo: lead.objetivo });
       // 2) leva o cliente para o WhatsApp com a mensagem pronta
       var url = waLink(mensagemPadrao(acao, lead));

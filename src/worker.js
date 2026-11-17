@@ -4,6 +4,7 @@
 // - /admin: CRM com pipeline (login padrão admin/admin; CRM_SENHA substitui a senha)
 // - /api/leads (GET/PATCH/DELETE) e /api/leads/:id/notas: API do CRM, protegida
 import ADMIN_HTML from "./admin.html";
+import { sendLead as metaLead, sendStage as metaStage, metaEnabled } from "./meta.js";
 
 export const STAGES = ["novo", "tentando_contato", "consegui_falar", "visita_marcada", "visitou", "proposta", "venda", "perdido"];
 export const STAGE_LABEL = {
@@ -21,7 +22,7 @@ const TIPOS_ATIVIDADE = ["nota", "ligacao", "whatsapp", "email", "visita"];
 const UTM = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid", "fbclid"];
 
 const SCHEMA = [
-  `CREATE TABLE IF NOT EXISTS leads (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')), updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')), nome TEXT NOT NULL, telefone TEXT NOT NULL, telefone_digitos TEXT, email TEXT, interesse TEXT, objetivo TEXT, stage TEXT NOT NULL DEFAULT 'novo', origem TEXT, cta TEXT, unidade TEXT, valor REAL, visita_em TEXT, proxima_acao TEXT, motivo_perda TEXT, observacoes TEXT, utm_source TEXT, utm_medium TEXT, utm_campaign TEXT, utm_term TEXT, utm_content TEXT, gclid TEXT, fbclid TEXT, referrer TEXT, pagina TEXT, cidade TEXT, user_agent TEXT)`,
+  `CREATE TABLE IF NOT EXISTS leads (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')), updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')), nome TEXT NOT NULL, telefone TEXT NOT NULL, telefone_digitos TEXT, email TEXT, interesse TEXT, objetivo TEXT, stage TEXT NOT NULL DEFAULT 'novo', origem TEXT, cta TEXT, unidade TEXT, valor REAL, visita_em TEXT, proxima_acao TEXT, motivo_perda TEXT, observacoes TEXT, utm_source TEXT, utm_medium TEXT, utm_campaign TEXT, utm_term TEXT, utm_content TEXT, gclid TEXT, fbclid TEXT, referrer TEXT, pagina TEXT, cidade TEXT, user_agent TEXT, fbp TEXT, fbc TEXT, client_ip TEXT)`,
   `CREATE INDEX IF NOT EXISTS idx_leads_tel ON leads(telefone_digitos)`,
   `CREATE INDEX IF NOT EXISTS idx_leads_stage ON leads(stage)`,
   `CREATE INDEX IF NOT EXISTS idx_leads_updated ON leads(updated_at)`,
@@ -32,6 +33,12 @@ let schemaOk = false;
 async function ensureSchema(db) {
   if (schemaOk) return;
   await db.batch(SCHEMA.map((s) => db.prepare(s)));
+  // migração: colunas adicionadas depois (integração Meta)
+  const { results } = await db.prepare("PRAGMA table_info(leads)").all();
+  const existentes = new Set(results.map((c) => c.name));
+  for (const col of ["fbp", "fbc", "client_ip"]) {
+    if (!existentes.has(col)) await db.prepare(`ALTER TABLE leads ADD COLUMN ${col} TEXT`).run();
+  }
   schemaOk = true;
 }
 
@@ -99,13 +106,23 @@ async function createLead(request, env, admin, ctx) {
   const interesse = clean(b.interesse, 80);
   const via = manual ? `cadastro manual (${origem})` : `site · ${origem}`;
 
+  // identificadores para a Meta (só faz sentido em leads vindos do site)
+  const fbp = manual ? null : clean(b.fbp, 200);
+  const fbc = manual ? null : clean(b.fbc, 300);
+  const clientIp = manual ? null : clean(request.headers.get("cf-connecting-ip"), 64);
+  const eventId = clean(b.event_id, 80);
+  const sourceUrl = clean(b.pagina, 400);
+
   const dup = await env.DB.prepare("SELECT id FROM leads WHERE telefone_digitos = ? ORDER BY id DESC LIMIT 1").bind(digits).first();
   if (dup) {
     await env.DB.prepare(`UPDATE leads SET nome = COALESCE(?, nome), email = COALESCE(?, email), interesse = COALESCE(?, interesse),
-        objetivo = COALESCE(?, objetivo), updated_at = ? WHERE id = ?`)
-      .bind(manual ? null : nome, email, interesse, clean(b.objetivo, 40), now(), dup.id).run();
+        objetivo = COALESCE(?, objetivo), fbp = COALESCE(?, fbp), fbc = COALESCE(?, fbc), client_ip = COALESCE(?, client_ip),
+        user_agent = COALESCE(?, user_agent), updated_at = ? WHERE id = ?`)
+      .bind(manual ? null : nome, email, interesse, clean(b.objetivo, 40), fbp, fbc, clientIp,
+        manual ? null : clean(request.headers.get("user-agent"), 300), now(), dup.id).run();
     await logActivity(env.DB, dup.id, "sistema", `Novo contato pelo ${via}${interesse ? ` (${interesse})` : ""}`);
     notify(env, ctx, { id: dup.id, duplicado: true, nome, telefone, email, interesse, origem, cta });
+    metaInBackground(env, ctx, dup.id, (lead) => metaLead(env, lead, { eventId, novo: false, manual, sourceUrl }));
     return json({ ok: true, id: dup.id, duplicado: true });
   }
 
@@ -123,7 +140,8 @@ async function createLead(request, env, admin, ctx) {
     pagina: manual ? null : clean(b.pagina, 400),
     // em cadastro manual a localização/navegador seriam os do corretor, não do cliente
     cidade: manual ? null : [cf.city, cf.region].filter(Boolean).join(" / ") || null,
-    user_agent: manual ? null : clean(request.headers.get("user-agent"), 300)
+    user_agent: manual ? null : clean(request.headers.get("user-agent"), 300),
+    fbp, fbc, client_ip: clientIp
   };
   UTM.forEach((k) => (row[k] = clean(b[k], 160)));
   const cols = Object.keys(row);
@@ -132,7 +150,24 @@ async function createLead(request, env, admin, ctx) {
   const id = r.meta.last_row_id;
   await logActivity(env.DB, id, "sistema", manual ? `Lead cadastrado manualmente · origem: ${origem}` : `Lead recebido pelo ${via}`);
   notify(env, ctx, { id, duplicado: false, nome, telefone, email, interesse, objetivo: row.objetivo, origem, cta });
+  metaInBackground(env, ctx, id, (lead) => metaLead(env, lead, { eventId, novo: true, manual, sourceUrl }));
   return json({ ok: true, id }, 201);
+}
+
+// Envia eventos à Meta sem atrasar a resposta e registra o resultado no histórico do lead
+function metaInBackground(env, ctx, leadId, fn) {
+  if (!metaEnabled(env)) return;
+  ctx.waitUntil((async () => {
+    try {
+      const lead = await env.DB.prepare("SELECT * FROM leads WHERE id = ?").bind(leadId).first();
+      if (!lead) return;
+      const r = await fn(lead);
+      const nomes = (r.names || []).join(" + ");
+      await logActivity(env.DB, leadId, "meta", r.ok ? `Meta Ads: ${nomes} enviado` : `Meta Ads: falha ao enviar ${nomes} (${r.error})`);
+    } catch (err) {
+      console.error("meta", err);
+    }
+  })());
 }
 
 // Aviso opcional a cada lead (Make, Zapier, n8n, Slack…): variável LEAD_WEBHOOK_URL
@@ -146,7 +181,7 @@ function notify(env, ctx, data) {
 
 async function listLeads(url, env) {
   const { results } = await env.DB.prepare(
-    `SELECT l.*, (SELECT texto FROM atividades a WHERE a.lead_id = l.id AND a.tipo <> 'sistema' AND a.tipo <> 'etapa' ORDER BY a.id DESC LIMIT 1) AS ultima_nota,
+    `SELECT l.*, (SELECT texto FROM atividades a WHERE a.lead_id = l.id AND a.tipo NOT IN ('sistema','etapa','meta') ORDER BY a.id DESC LIMIT 1) AS ultima_nota,
             (SELECT COUNT(*) FROM atividades a WHERE a.lead_id = l.id AND a.tipo = 'sistema') AS contatos
      FROM leads l ORDER BY l.updated_at DESC LIMIT 3000`
   ).all();
@@ -165,7 +200,7 @@ async function listLeads(url, env) {
   return json({ ok: true, stages: STAGES.map((s) => ({ id: s, label: STAGE_LABEL[s] })), leads: results });
 }
 
-async function updateLead(id, request, env) {
+async function updateLead(id, request, env, ctx) {
   const current = await env.DB.prepare("SELECT * FROM leads WHERE id = ?").bind(id).first();
   if (!current) return json({ ok: false, error: "Lead não encontrado." }, 404);
   const b = await readBody(request);
@@ -181,7 +216,8 @@ async function updateLead(id, request, env) {
     sets.push(`${k} = ?`); vals.push(v);
     if (k === "telefone") { sets.push("telefone_digitos = ?"); vals.push(digitsOf(v)); }
   }
-  if (b.stage && STAGES.includes(b.stage) && b.stage !== current.stage) {
+  const mudouEtapa = b.stage && STAGES.includes(b.stage) && b.stage !== current.stage;
+  if (mudouEtapa) {
     sets.push("stage = ?"); vals.push(b.stage);
     await logActivity(env.DB, id, "etapa", `${STAGE_LABEL[current.stage] || current.stage} → ${STAGE_LABEL[b.stage]}`);
   }
@@ -189,6 +225,7 @@ async function updateLead(id, request, env) {
     sets.push("updated_at = ?"); vals.push(now());
     await env.DB.prepare(`UPDATE leads SET ${sets.join(", ")} WHERE id = ?`).bind(...vals, id).run();
   }
+  if (mudouEtapa) metaInBackground(env, ctx, id, (lead) => metaStage(env, lead));
   return json({ ok: true, lead: await getLead(env.DB, id) });
 }
 
@@ -223,7 +260,7 @@ async function handleApi(request, env, url, ctx) {
       const l = await getLead(env.DB, id);
       return l ? json({ ok: true, lead: l }) : json({ ok: false, error: "Lead não encontrado." }, 404);
     }
-    if (m === "PATCH") return updateLead(id, request, env);
+    if (m === "PATCH") return updateLead(id, request, env, ctx);
     if (m === "DELETE") {
       await env.DB.batch([
         env.DB.prepare("DELETE FROM atividades WHERE lead_id = ?").bind(id),

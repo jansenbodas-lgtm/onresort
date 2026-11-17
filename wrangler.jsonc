@@ -18,5 +18,11 @@
   "rules": [
     { "type": "Text", "globs": ["**/*.html"], "fallthrough": true }
   ],
+  "vars": {
+    // ID do pixel da Meta (público). O token da API de Conversões vai como
+    // Secret META_CAPI_TOKEN no painel do Cloudflare, nunca neste arquivo.
+    "META_PIXEL_ID": "650460263189144"
+  },
+  "keep_vars": true,
   "observability": { "enabled": true }
 }

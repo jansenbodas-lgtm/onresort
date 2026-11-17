@@ -39,6 +39,16 @@ Todo lead (formulários e popup do WhatsApp) é gravado no CRM, mesmo que a pess
 - **Banco:** Cloudflare D1 `onresort-crm` (binding `DB`, já declarado no `wrangler.jsonc`). Estrutura em `migrations/0001_leads.sql`; o Worker cria as tabelas se faltarem.
 - **API:** `POST /api/leads` é público (usado pelo site, deduplica pelo telefone). Leitura, edição, exclusão e notas em `/api/leads` exigem o login.
 
+### Meta Ads (Pixel + API de Conversões)
+- **Pixel** `650460263189144` no site: PageView em toda visita e **Lead** a cada envio de formulário/popup.
+- **API de Conversões** (servidor, `src/meta.js`):
+  - **Lead** (evento padrão) em todo lead, do site e cadastrado manualmente. Leads do site usam o mesmo `event_id` do Pixel, então a Meta deduplica.
+  - **Eventos personalizados por etapa** do CRM: `CRM_NovoLead`, `CRM_TentandoContato`, `CRM_ConseguiFalar`, `CRM_MarcouVisita`, `CRM_Visitou`, `CRM_FezProposta`, `CRM_VendaFechada` e `CRM_Perdido`. Proposta e venda levam `value` e `currency` (BRL) quando o valor está preenchido.
+  - Dados do cliente (e-mail, telefone, nome) vão com hash SHA-256, além de `fbp`, `fbc`, IP e navegador quando o lead veio do site.
+  - Cada envio fica registrado no histórico do lead no CRM (📣 Meta Ads).
+- **Configuração obrigatória:** Secret `META_CAPI_TOKEN` com o token da API de Conversões. Sem ele, só o Pixel do navegador funciona.
+- Opcional: `META_TEST_EVENT_CODE` para ver os eventos na aba *Testar eventos* do Gerenciador de Eventos (remova depois do teste).
+
 ### Variáveis opcionais (Workers > onresort > Settings > Variables and Secrets)
 - `CRM_SENHA` (Secret): troca a senha padrão `admin`. `CRM_USUARIO` troca o usuário.
 - `LEAD_WEBHOOK_URL`: recebe cada lead em JSON (Make, Zapier, n8n, Slack).

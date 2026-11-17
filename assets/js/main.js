@@ -97,6 +97,22 @@
     if (lead.objetivo) data.objetivo = lead.objetivo;
     window.fbq("track", "Lead", data, { eventID: lead.event_id });
   }
+  // Google Ads: conversão de lead com dados otimizados (o Google aplica hash antes de enviar)
+  function googleLead(lead) {
+    if (typeof window.gtag !== "function") return;
+    var d = String(lead.telefone || "").replace(/\D/g, ""); if (d.length === 10 || d.length === 11) d = "55" + d;
+    var partes = String(lead.nome || "").trim().split(/\s+/);
+    var ud = { address: { country: "BR" } };
+    if (lead.email) ud.email = lead.email.trim().toLowerCase();
+    if (d) ud.phone_number = "+" + d;
+    if (partes[0]) ud.address.first_name = partes[0];
+    if (partes.length > 1) ud.address.last_name = partes[partes.length - 1];
+    window.gtag("set", "user_data", ud);
+    window.gtag("event", "generate_lead", { send_to: CFG.googleAdsId, lead_origem: lead.origem, interesse: lead.interesse || undefined });
+    if (CFG.googleAdsId && CFG.googleAdsLeadLabel) {
+      window.gtag("event", "conversion", { send_to: CFG.googleAdsId + "/" + CFG.googleAdsLeadLabel, transaction_id: lead.event_id });
+    }
+  }
 
   /* ---------- Header ---------- */
   var header = $(".header");
@@ -305,6 +321,7 @@
     // 1) grava o lead no CRM (independe de a conversa ser concluída)
     sendLead(lead).catch(function () {});
     pixelLead(lead);
+    googleLead(lead);
     track("lead_submit", { origem: lead.origem, interesse: lead.interesse });
     // 2) abre o WhatsApp já com a mensagem pronta
     var url = waLink(mensagemPadrao(waAcao, lead));
@@ -331,6 +348,7 @@
       // 1) grava o lead no CRM (keepalive: chega mesmo com a ida para o WhatsApp)
       sendLead(lead).catch(function () {});
     pixelLead(lead);
+    googleLead(lead);
       track("lead_submit", { origem: lead.origem, objetivo: lead.objetivo });
       // 2) leva o cliente para o WhatsApp com a mensagem pronta
       var url = waLink(mensagemPadrao(acao, lead));

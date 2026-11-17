@@ -49,6 +49,10 @@ Todo lead (formulários e popup do WhatsApp) é gravado no CRM, mesmo que a pess
 - **Configuração obrigatória:** Secret `META_CAPI_TOKEN` com o token da API de Conversões. Sem ele, só o Pixel do navegador funciona.
 - Opcional: `META_TEST_EVENT_CODE` para ver os eventos na aba *Testar eventos* do Gerenciador de Eventos (remova depois do teste).
 
+### Google Ads
+- Tag do Google `AW-10894823435` em todas as páginas (visitas e remarketing), com conversões otimizadas (e-mail, telefone e nome do lead; o Google aplica o hash).
+- Em todo lead do site: evento `generate_lead` e, quando o rótulo estiver preenchido em `assets/js/config.js` (`googleAdsLeadLabel`), a conversão `AW-10894823435/<rótulo>`.
+
 ### Variáveis opcionais (Workers > onresort > Settings > Variables and Secrets)
 - `CRM_SENHA` (Secret): troca a senha padrão `admin`. `CRM_USUARIO` troca o usuário.
 - `LEAD_WEBHOOK_URL`: recebe cada lead em JSON (Make, Zapier, n8n, Slack).

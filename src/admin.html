@@ -44,6 +44,9 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .col-h b{font-weight:600;font-size:14px}
 .col-h .n{background:#fff;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:600}
 .col-h .sum{margin-left:auto;font-size:12px;color:var(--ink2)}
+.col-add{margin-left:auto;border:0;background:#fff;color:var(--ink2);width:24px;height:24px;border-radius:50%;font-size:17px;line-height:1;display:grid;place-items:center;padding:0}
+.col-h .sum+.col-add{margin-left:6px}
+.col-add:hover{background:var(--orange);color:#fff}
 .cards{padding:4px 8px 10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:60px}
 .col.over{outline:2px dashed var(--orange);outline-offset:-2px}
 .card{background:#fff;border-radius:10px;padding:10px 12px;border:1px solid var(--line);cursor:grab;box-shadow:0 1px 2px rgba(0,0,0,.04)}
@@ -141,14 +144,18 @@ dialog h3{margin:0 0 12px;font-weight:500}
 <aside class="drawer" id="drawer" hidden aria-label="Ficha do lead"></aside>
 
 <dialog id="dlgNew">
-  <h3>Novo lead</h3>
+  <h3>Adicionar lead manualmente</h3>
   <form id="fNew" class="grid">
-    <label class="f full"><span>Nome *</span><input name="nome" required></label>
-    <label class="f"><span>Telefone *</span><input name="telefone" required inputmode="tel"></label>
-    <label class="f"><span>E-mail</span><input name="email" type="email"></label>
+    <label class="f full"><span>Nome *</span><input name="nome" required autocomplete="off"></label>
+    <label class="f"><span>Telefone *</span><input name="telefone" required inputmode="tel" placeholder="(21) 99999-9999" autocomplete="off"></label>
+    <label class="f"><span>E-mail</span><input name="email" type="email" autocomplete="off"></label>
     <label class="f"><span>Interesse</span><select name="interesse" class="selInt"></select></label>
-    <label class="f"><span>Origem</span><select name="origem"><option value="manual">Manual</option><option>indicação</option><option>plantão</option><option>telefone</option><option>instagram</option><option>outro</option></select></label>
-    <label class="f full"><span>Observações</span><textarea name="observacoes"></textarea></label>
+    <label class="f"><span>Objetivo</span><select name="objetivo"><option value="">—</option><option>Investir</option><option>Morar</option><option>Os dois</option></select></label>
+    <label class="f"><span>Origem</span><select name="origem"><option>Indicação</option><option>Plantão / estande</option><option>Ligação</option><option>WhatsApp direto</option><option>Instagram</option><option>Facebook</option><option>Evento</option><option>Carteira de clientes</option><option>Outro</option></select></label>
+    <label class="f"><span>Etapa</span><select name="stage" id="newStage"></select></label>
+    <label class="f full"><span>Próxima ação</span><input name="proxima_acao" placeholder="Ex.: Ligar amanhã às 10h" autocomplete="off"></label>
+    <label class="f full"><span>Observações</span><textarea name="observacoes" placeholder="Como chegou, o que procura, orçamento…"></textarea></label>
+    <p class="small f full" id="newErr" style="color:var(--red);margin:0"></p>
     <div class="f full" style="display:flex;gap:8px;justify-content:flex-end;flex-direction:row"><button type="button" class="btn btn-l" id="cancelNew">Cancelar</button><button class="btn btn-o">Salvar lead</button></div>
   </form>
 </dialog>
@@ -211,7 +218,7 @@ function render(){kpis();var list=filtered();
   if(view==="board"){
     $("#board").innerHTML=STAGES.map(function(s){var ls=list.filter(function(l){return l.stage===s.id});
       var sum=ls.reduce(function(a,l){return a+(Number(l.valor)||0)},0);
-      return'<section class="col" data-stage="'+s.id+'" style="--c:'+s.c+'"><div class="col-h"><b>'+s.label+'</b><span class="n">'+ls.length+'</span>'+(sum?'<span class="sum">'+brl(sum)+'</span>':'')+'</div><div class="cards">'+ls.map(card).join("")+'</div></section>'}).join("");
+      return'<section class="col" data-stage="'+s.id+'" style="--c:'+s.c+'"><div class="col-h"><b>'+s.label+'</b><span class="n">'+ls.length+'</span>'+(sum?'<span class="sum">'+brl(sum)+'</span>':'')+'<button class="col-add" data-stage="'+s.id+'" title="Adicionar lead em '+s.label+'" aria-label="Adicionar lead em '+s.label+'">+</button></div><div class="cards">'+ls.map(card).join("")+'</div></section>'}).join("");
   }else{
     $("#list").innerHTML=list.length?'<table><thead><tr><th>Entrada</th><th>Nome</th><th>Telefone</th><th>Interesse</th><th>Etapa</th><th>Origem</th><th>Próxima ação</th><th>Última nota</th></tr></thead><tbody>'+list.map(function(l){var s=SMAP[l.stage]||{};
       return'<tr data-id="'+l.id+'"><td>'+dt(l.created_at)+'</td><td><b>'+esc(l.nome)+'</b><div class="small">'+esc(l.email||"")+'</div></td><td>'+esc(fmtTel(l.telefone))+'</td><td>'+esc(l.interesse||"")+(l.objetivo?'<div class="small">'+esc(l.objetivo)+'</div>':'')+'</td><td><span class="stg" style="--c:'+s.c+'">'+esc(s.label||l.stage)+'</span></td><td>'+esc(l.origem||"")+(l.utm_source?'<div class="small">'+esc(l.utm_source)+'</div>':'')+'</td><td>'+esc(l.proxima_acao||"")+(l.visita_em?'<div class="small">Visita '+dt(l.visita_em)+'</div>':'')+'</td><td class="small">'+esc((l.ultima_nota||"").slice(0,90))+'</td></tr>'}).join("")+'</tbody></table>':'<div class="empty">Nenhum lead encontrado.</div>';
@@ -282,10 +289,15 @@ $("#ov").addEventListener("click",closeLead);
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("#drawer").hidden)closeLead()});
 
 /* Novo lead */
-$("#newLead").onclick=function(){$("#fNew").reset();$("#dlgNew").showModal()};
+$("#newStage").innerHTML=STAGES.map(function(s){return'<option value="'+s.id+'">'+s.label+'</option>'}).join("");
+function novoLead(stage){$("#fNew").reset();$("#newErr").textContent="";$("#newStage").value=stage||"novo";$("#dlgNew").showModal();setTimeout(function(){$("#fNew [name=nome]").focus()},30)}
+$("#newLead").onclick=function(){novoLead()};
+$("#board").addEventListener("click",function(e){var b=e.target.closest(".col-add");if(b){e.stopPropagation();novoLead(b.dataset.stage)}});
+$("#fNew [name=telefone]").addEventListener("input",function(e){var d=e.target.value.replace(/\D/g,"").slice(0,11);e.target.value=d.length>10?d.replace(/(\d{2})(\d{5})(\d{0,4})/,"($1) $2-$3"):d.length>6?d.replace(/(\d{2})(\d{4})(\d{0,4})/,"($1) $2-$3"):d.length>2?d.replace(/(\d{2})(\d{0,5})/,"($1) $2"):d});
 $("#cancelNew").onclick=function(){$("#dlgNew").close()};
-$("#fNew").addEventListener("submit",function(e){e.preventDefault();var body={};$$("input,select,textarea",e.target).forEach(function(i){body[i.name]=i.value});
-  api("/api/leads",{method:"POST",body:body}).then(function(d){$("#dlgNew").close();toast(d.duplicado?"Telefone já existia: contato registrado no lead":"Lead criado");load().then(function(){openLead(d.id)})}).catch(function(err){toast(err.message)})});
+$("#fNew").addEventListener("submit",function(e){e.preventDefault();var body={manual:true};$$("input,select,textarea",e.target).forEach(function(i){if(i.name)body[i.name]=i.value});
+  $("#newErr").textContent="";
+  api("/api/leads",{method:"POST",body:body}).then(function(d){$("#dlgNew").close();toast(d.duplicado?"Esse telefone já estava no CRM: abri o lead existente":"Lead adicionado");load().then(function(){openLead(d.id)})}).catch(function(err){$("#newErr").textContent=err.message})});
 
 /* Filtros e visão */
 $$(".seg button").forEach(function(b){b.onclick=function(){$$(".seg button").forEach(function(x){x.classList.toggle("on",x===b)});view=b.dataset.view;$("#board").hidden=view!=="board";$("#list").hidden=view!=="list";render()}});

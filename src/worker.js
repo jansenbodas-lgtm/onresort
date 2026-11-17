@@ -92,16 +92,18 @@ async function createLead(request, env, admin, ctx) {
   const email = clean(b.email, 160);
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return json({ ok: false, error: "E-mail inválido." }, 400);
 
-  const origem = clean(b.origem, 160) || (admin ? "manual" : "site");
+  // cadastro manual pelo CRM (só com login): marca "manual" e permite campos extras
+  const manual = admin && (b.manual === true || b.manual === "1" || b.manual === "true");
+  const origem = clean(b.origem, 160) || (manual ? "Cadastro manual" : "site");
   const cta = clean(b.cta, 120);
   const interesse = clean(b.interesse, 80);
-  const via = admin && origem === "manual" ? "cadastro manual" : `site · ${origem}`;
+  const via = manual ? `cadastro manual (${origem})` : `site · ${origem}`;
 
   const dup = await env.DB.prepare("SELECT id FROM leads WHERE telefone_digitos = ? ORDER BY id DESC LIMIT 1").bind(digits).first();
   if (dup) {
     await env.DB.prepare(`UPDATE leads SET nome = COALESCE(?, nome), email = COALESCE(?, email), interesse = COALESCE(?, interesse),
         objetivo = COALESCE(?, objetivo), updated_at = ? WHERE id = ?`)
-      .bind(nome, email, interesse, clean(b.objetivo, 40), now(), dup.id).run();
+      .bind(manual ? null : nome, email, interesse, clean(b.objetivo, 40), now(), dup.id).run();
     await logActivity(env.DB, dup.id, "sistema", `Novo contato pelo ${via}${interesse ? ` (${interesse})` : ""}`);
     notify(env, ctx, { id: dup.id, duplicado: true, nome, telefone, email, interesse, origem, cta });
     return json({ ok: true, id: dup.id, duplicado: true });
@@ -114,17 +116,21 @@ async function createLead(request, env, admin, ctx) {
     stage: admin && STAGES.includes(b.stage) ? b.stage : "novo",
     origem, cta,
     observacoes: admin ? clean(b.observacoes, 4000) : null,
-    referrer: clean(b.referrer, 300),
-    pagina: clean(b.pagina, 400),
-    cidade: [cf.city, cf.region].filter(Boolean).join(" / ") || null,
-    user_agent: clean(request.headers.get("user-agent"), 300)
+    unidade: manual ? clean(b.unidade, 120) : null,
+    proxima_acao: manual ? clean(b.proxima_acao, 300) : null,
+    visita_em: manual ? clean(b.visita_em, 40) : null,
+    referrer: manual ? null : clean(b.referrer, 300),
+    pagina: manual ? null : clean(b.pagina, 400),
+    // em cadastro manual a localização/navegador seriam os do corretor, não do cliente
+    cidade: manual ? null : [cf.city, cf.region].filter(Boolean).join(" / ") || null,
+    user_agent: manual ? null : clean(request.headers.get("user-agent"), 300)
   };
   UTM.forEach((k) => (row[k] = clean(b[k], 160)));
   const cols = Object.keys(row);
   const r = await env.DB.prepare(`INSERT INTO leads (${cols.join(",")}) VALUES (${cols.map(() => "?").join(",")})`)
     .bind(...cols.map((c) => row[c])).run();
   const id = r.meta.last_row_id;
-  await logActivity(env.DB, id, "sistema", admin && origem === "manual" ? "Lead cadastrado manualmente" : `Lead recebido pelo ${via}`);
+  await logActivity(env.DB, id, "sistema", manual ? `Lead cadastrado manualmente · origem: ${origem}` : `Lead recebido pelo ${via}`);
   notify(env, ctx, { id, duplicado: false, nome, telefone, email, interesse, objetivo: row.objetivo, origem, cta });
   return json({ ok: true, id }, 201);
 }

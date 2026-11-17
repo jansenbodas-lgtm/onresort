@@ -21,5 +21,5 @@ window.ONRESORT_CONFIG = {
   // send_to: 'AW-10894823435/ESTE_TRECHO'. Sem rótulo, a tag registra visitas,
   // remarketing e o evento generate_lead, mas não conta a conversão.
   googleAdsId: "AW-10894823435",
-  googleAdsLeadLabel: ""
+  googleAdsLeadLabel: "V25mCNft5-EcEIugh8so"
 };

@@ -12,7 +12,7 @@ window.ONRESORT_CONFIG = {
   telefoneExibicao: "(21) 99690-3909",
   corretorNome: "Rafael Bodas",
   imobiliaria: "JBI",
-  creci: "",
+  creci: "46697",
   mensagemWhatsApp: "Olá! Tenho interesse no ON Resort Cidade Jardim e gostaria de receber mais informações.",
   formEndpoint: "/api/leads"
 };

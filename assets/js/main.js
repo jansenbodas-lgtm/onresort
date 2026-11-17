@@ -259,17 +259,22 @@
       if (!validate(form, false)) { msg.classList.add("is-err"); msg.textContent = "Confira os campos destacados."; return; }
       var lead = buildLead(form, form.getAttribute("data-origem"));
       remember(lead);
-      var btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true; var label = btn.textContent; btn.textContent = "Enviando...";
-      sendLead(lead).then(function () {
-        track("lead_submit", { origem: lead.origem, objetivo: lead.objetivo });
-        msg.classList.add("is-ok");
-        msg.innerHTML = "Recebemos seus dados! Em breve um especialista entra em contato. <a href=\"" + waLink("Olá! Sou " + lead.nome + " e acabei de pedir o estudo de rentabilidade do ON Resort Cidade Jardim.") + "\" target=\"_blank\" rel=\"noopener\">Prefere falar agora no WhatsApp?</a>";
-        form.reset();
-      }).catch(function () {
-        msg.classList.add("is-err");
-        msg.textContent = "Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp.";
-      }).then(function () { btn.disabled = false; btn.textContent = label; });
+      // 1) grava o lead no CRM (keepalive: chega mesmo com a ida para o WhatsApp)
+      sendLead(lead).catch(function () {});
+      track("lead_submit", { origem: lead.origem, objetivo: lead.objetivo });
+      // 2) leva o cliente para o WhatsApp com a mensagem pronta
+      var detalhes = [];
+      if (lead.interesse && lead.interesse !== "Ainda não sei") detalhes.push("tipologia: " + lead.interesse);
+      if (lead.objetivo) detalhes.push("objetivo: " + lead.objetivo.toLowerCase());
+      var txt = "Olá! Sou " + lead.nome + " e tenho interesse no ON Resort Cidade Jardim" +
+        (detalhes.length ? " (" + detalhes.join(", ") + ")" : "") +
+        ". Gostaria de receber a tabela de lançamento e o estudo de rentabilidade.";
+      var url = waLink(txt);
+      var w = window.open(url, "_blank", "noopener");
+      if (!w) location.href = url;
+      msg.classList.add("is-ok");
+      msg.innerHTML = "Recebemos seus dados! Abrindo o WhatsApp… <a href=\"" + url + "\" target=\"_blank\" rel=\"noopener\">Clique aqui se não abrir.</a>";
+      form.reset();
     });
   });
 })();

@@ -18,7 +18,7 @@
   var SECOES = { hero: "Topo", oportunidade: "Oportunidade", investir: "Por que investir", lazer: "Lazer",
     servicos: "Serviços", plantas: "Plantas", bairro: "Cidade Jardim", localizacao: "Localização", contato: "Contato" };
   function secaoDe(el) {
-    if (el.closest(".whats-float")) return "Botão flutuante do WhatsApp";
+    if (el.closest(".fab-cta")) return "Botão flutuante do WhatsApp";
     if (el.closest(".mobile-bar")) return "Barra fixa do celular";
     if (el.closest(".footer")) return "Rodapé";
     if (el.closest(".header")) return "Menu do topo";
@@ -42,7 +42,7 @@
     "whatsapp": "falar com o corretor"
   };
   function acaoDe(el) {
-    if (el.closest(".whats-float") || el.closest(".footer")) return "falar com o corretor";
+    if (el.closest(".fab-cta") || el.closest(".footer")) return "falar com o corretor";
     var txt = textoBotao(el), chave = txt.toLowerCase();
     if (chave === "ver estudo") {
       var plan = el.closest(".plan");
@@ -66,10 +66,10 @@
   });
 
   // Os links de WhatsApp abrem o popup de captura; o href fica como fallback sem JS
-  $$("[data-whatsapp]").forEach(function (a) {
-    a.href = waLink(mensagemPadrao(acaoDe(a)));
-    a.target = "_blank";
-    a.rel = "noopener";
+  $$("[data-fala]").forEach(function (a) {
+    // sem link wa.me no HTML (filtros de bloqueadores escondem esses links); o WhatsApp abre via JS
+    a.href = "#contato";
+    a.removeAttribute("target");
     a.addEventListener("click", function (e) {
       e.preventDefault();
       track("whatsapp_click", { origem: origemDe(a) });
@@ -290,33 +290,33 @@
   }
 
   /* ---------- Popup do WhatsApp ---------- */
-  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "WhatsApp", waCta = "", waAcao = "falar com o corretor", lastFocus = null;
+  var ctModal = $("#ctModal"), ctForm = $("#ctForm"), waOrigem = "WhatsApp", waCta = "", waAcao = "falar com o corretor", lastFocus = null;
   function openWaModal(origem, cta, acao) {
     waOrigem = origem || "WhatsApp";
     waCta = cta || "";
     waAcao = acao || "falar com o corretor";
     var saved = recall();
-    if (saved) ["nome", "telefone", "email", "interesse"].forEach(function (k) { if (saved[k] && !waForm[k].value) waForm[k].value = saved[k]; });
+    if (saved) ["nome", "telefone", "email", "interesse"].forEach(function (k) { if (saved[k] && !ctForm[k].value) ctForm[k].value = saved[k]; });
     var pre = document.querySelector('#formFooter select[name="interesse"]');
-    if (pre && pre.value && !waForm.interesse.value) waForm.interesse.value = pre.value;
-    $(".lead-form__msg", waForm).textContent = "";
+    if (pre && pre.value && !ctForm.interesse.value) ctForm.interesse.value = pre.value;
+    $(".lead-form__msg", ctForm).textContent = "";
     lastFocus = document.activeElement;
-    waModal.hidden = false; document.body.style.overflow = "hidden";
-    setTimeout(function () { (waForm.nome.value ? waForm.querySelector("button[type=submit]") : waForm.nome).focus(); }, 50);
+    ctModal.hidden = false; document.body.style.overflow = "hidden";
+    setTimeout(function () { (ctForm.nome.value ? ctForm.querySelector("button[type=submit]") : ctForm.nome).focus(); }, 50);
   }
   function closeWaModal() {
-    waModal.hidden = true; document.body.style.overflow = "";
+    ctModal.hidden = true; document.body.style.overflow = "";
     if (lastFocus) lastFocus.focus();
   }
-  $(".wa-modal__close", waModal).addEventListener("click", closeWaModal);
-  waModal.addEventListener("click", function (e) { if (e.target === waModal) closeWaModal(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !waModal.hidden) closeWaModal(); });
-  waForm.addEventListener("submit", function (e) {
+  $(".ct-modal__close", ctModal).addEventListener("click", closeWaModal);
+  ctModal.addEventListener("click", function (e) { if (e.target === ctModal) closeWaModal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !ctModal.hidden) closeWaModal(); });
+  ctForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    var msg = $(".lead-form__msg", waForm);
+    var msg = $(".lead-form__msg", ctForm);
     msg.className = "lead-form__msg";
-    if (!validate(waForm, true)) { msg.classList.add("is-err"); msg.textContent = "Preencha os campos destacados."; return; }
-    var lead = buildLead(waForm, waOrigem, waCta);
+    if (!validate(ctForm, true)) { msg.classList.add("is-err"); msg.textContent = "Preencha os campos destacados."; return; }
+    var lead = buildLead(ctForm, waOrigem, waCta);
     remember(lead);
     // 1) grava o lead no CRM (independe de a conversa ser concluída)
     sendLead(lead).catch(function () {});

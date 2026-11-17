@@ -4,7 +4,7 @@
 // - /admin: CRM com pipeline (login padrão admin/admin; CRM_SENHA substitui a senha)
 // - /api/leads (GET/PATCH/DELETE) e /api/leads/:id/notas: API do CRM, protegida
 import ADMIN_HTML from "./admin.html";
-import { sendLead as metaLead, sendStage as metaStage, metaEnabled } from "./meta.js";
+import { sendLead as metaLead, sendStage as metaStage, sendPageView as metaPageView, metaEnabled, STAGE_EVENT } from "./meta.js";
 
 export const STAGES = ["novo", "tentando_contato", "consegui_falar", "visita_marcada", "visitou", "proposta", "venda", "perdido"];
 export const STAGE_LABEL = {
@@ -179,7 +179,44 @@ function notify(env, ctx, data) {
   }).catch(() => {}));
 }
 
+// Conversões off-line para o Google Ads (upload de CSV): leads que chegaram por
+// anúncio do Google (gclid) + cada etapa do funil, com o horário de Brasília.
+function horaBrasilia(iso) {
+  const d = new Date(iso);
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+  }).formatToParts(d).map((x) => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}:${p.second}`;
+}
+async function googleOfflineCsv(env) {
+  const { results: leads } = await env.DB.prepare("SELECT id, gclid, created_at, valor FROM leads WHERE gclid IS NOT NULL AND gclid <> '' ORDER BY id").all();
+  const labelToStage = Object.fromEntries(Object.entries(STAGE_LABEL).map(([k, v]) => [v, k]));
+  const rows = [];
+  for (const l of leads) {
+    rows.push([l.gclid, STAGE_EVENT.novo, horaBrasilia(l.created_at), "", ""]);
+    const { results: ativ } = await env.DB.prepare("SELECT texto, created_at FROM atividades WHERE lead_id = ? AND tipo = 'etapa' ORDER BY id").bind(l.id).all();
+    for (const a of ativ) {
+      const destino = String(a.texto).split("→").pop().trim();
+      const st = labelToStage[destino];
+      if (!st || st === "novo") continue;
+      const comValor = (st === "proposta" || st === "venda") && l.valor;
+      rows.push([l.gclid, STAGE_EVENT[st], horaBrasilia(a.created_at), comValor ? String(l.valor) : "", comValor ? "BRL" : ""]);
+    }
+  }
+  const csv = ["Parameters:TimeZone=America/Sao_Paulo", "Google Click ID,Conversion Name,Conversion Time,Conversion Value,Conversion Currency",
+    ...rows.map((r) => r.join(","))].join("\r\n");
+  return new Response(csv, {
+    headers: {
+      "content-type": "text/csv; charset=utf-8",
+      "content-disposition": `attachment; filename="google-ads-conversoes-offline-${now().slice(0, 10)}.csv"`,
+      "cache-control": "no-store"
+    }
+  });
+}
+
 async function listLeads(url, env) {
+  if (url.searchParams.get("formato") === "google") return googleOfflineCsv(env);
   const { results } = await env.DB.prepare(
     `SELECT l.*, (SELECT texto FROM atividades a WHERE a.lead_id = l.id AND a.tipo NOT IN ('sistema','etapa','meta') ORDER BY a.id DESC LIMIT 1) AS ultima_nota,
             (SELECT COUNT(*) FROM atividades a WHERE a.lead_id = l.id AND a.tipo = 'sistema') AS contatos
@@ -273,6 +310,53 @@ async function handleApi(request, env, url, ctx) {
   return json({ ok: false, error: "Método não permitido." }, 405);
 }
 
+/* ---------- Página: cookies próprios da Meta + PageView pelo servidor ----------
+ * Bloqueadores de anúncio impedem o Pixel no navegador. Aqui o próprio domínio
+ * grava _fbp/_fbc e envia o PageView pela API de Conversões; o Pixel (quando não
+ * bloqueado) usa o mesmo event_id e a Meta conta uma vez só.                     */
+const BOT = /bot|crawl|spider|slurp|facebookexternalhit|preview|monitor|lighthouse|pingdom/i;
+function readCookie(header, name) {
+  const m = (header || "").match(new RegExp("(?:^|;\\s*)" + name + "=([^;]*)"));
+  return m ? decodeURIComponent(m[1]) : "";
+}
+async function servePage(request, env, ctx, url) {
+  const res = await env.ASSETS.fetch(request);
+  const type = res.headers.get("content-type") || "";
+  if (request.method !== "GET" || !res.ok || !type.includes("text/html")) return res;
+
+  const cookieHeader = request.headers.get("cookie");
+  const ms = Date.now();
+  let fbp = readCookie(cookieHeader, "_fbp");
+  let fbc = readCookie(cookieHeader, "_fbc");
+  const setCookies = [];
+  const maxAge = 60 * 60 * 24 * 90;
+  if (!fbp) {
+    fbp = `fb.1.${ms}.${Math.floor(1e9 + Math.random() * 9e9)}`;
+    setCookies.push(`_fbp=${fbp}; Path=/; Max-Age=${maxAge}; SameSite=Lax; Secure`);
+  }
+  const fbclid = url.searchParams.get("fbclid");
+  if (fbclid && !fbc.endsWith("." + fbclid)) {
+    fbc = `fb.1.${ms}.${fbclid}`;
+    setCookies.push(`_fbc=${fbc}; Path=/; Max-Age=${maxAge}; SameSite=Lax; Secure`);
+  }
+  const eventId = `pv_${ms}_${Math.random().toString(36).slice(2, 10)}`;
+  const ua = request.headers.get("user-agent") || "";
+  if (metaEnabled(env) && !BOT.test(ua)) {
+    ctx.waitUntil(metaPageView(env, {
+      eventId, url: url.toString(), fbp, fbc: fbc || null,
+      ip: request.headers.get("cf-connecting-ip"), ua
+    }).then((r) => { if (!r.ok && !r.skipped) console.error("meta pageview", r.error); }));
+  }
+
+  const out = new HTMLRewriter()
+    .on("head", { element(el) { el.prepend(`<meta name="pv-id" content="${eventId}">`, { html: true }); } })
+    .transform(res);
+  const headers = new Headers(out.headers);
+  setCookies.forEach((c) => headers.append("set-cookie", c));
+  headers.set("cache-control", "no-cache");
+  return new Response(out.body, { status: out.status, headers });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -290,6 +374,7 @@ export default {
         headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex, nofollow" }
       });
     }
+    if (url.pathname === "/" || url.pathname === "/index.html") return servePage(request, env, ctx, url);
     return env.ASSETS.fetch(request);
   }
 };

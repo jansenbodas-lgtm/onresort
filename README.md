@@ -53,6 +53,11 @@ Todo lead (formulários e popup do WhatsApp) é gravado no CRM, mesmo que a pess
 - Tag do Google `AW-10894823435` em todas as páginas (visitas e remarketing), com conversões otimizadas (e-mail, telefone e nome do lead; o Google aplica o hash).
 - Em todo lead do site: evento `generate_lead` e, quando o rótulo estiver preenchido em `assets/js/config.js` (`googleAdsLeadLabel`), a conversão `AW-10894823435/<rótulo>`.
 
+### Bloqueadores de anúncio
+- **Meta:** a página passa pelo Worker (`run_worker_first`), que grava os cookies `_fbp`/`_fbc` no próprio domínio e envia o **PageView** pela API de Conversões. Lead e etapas já saem do servidor. Com o Pixel bloqueado, nada se perde; sem bloqueio, o Pixel usa o mesmo `event_id` e a Meta deduplica.
+- **Google Ads:** a tag só roda no navegador. O CRM guarda o `gclid` e o botão **CSV Google Ads** no `/admin` gera o arquivo de conversões off-line (CRM_NovoLead e cada etapa, com valor em proposta/venda) para enviar em *Metas > Conversões > Uploads*. Crie no Google Ads ações de conversão do tipo "Importar > Cliques" com esses mesmos nomes.
+- Os botões de contato não usam classes nem links `wa.me` no HTML, que filtros de "incômodos" costumam esconder.
+
 ### Variáveis opcionais (Workers > onresort > Settings > Variables and Secrets)
 - `CRM_SENHA` (Secret): troca a senha padrão `admin`. `CRM_USUARIO` troca o usuário.
 - `LEAD_WEBHOOK_URL`: recebe cada lead em JSON (Make, Zapier, n8n, Slack).

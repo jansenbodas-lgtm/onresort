@@ -136,3 +136,20 @@ export async function sendStage(env, lead) {
   };
   return { names: [name], ...(await send(env, [ev])) };
 }
+
+/** PageView pelo servidor (funciona mesmo com bloqueador de anúncios). */
+export async function sendPageView(env, d) {
+  const user_data = {};
+  if (d.ip) user_data.client_ip_address = d.ip;
+  if (d.ua) user_data.client_user_agent = d.ua;
+  if (d.fbp) user_data.fbp = d.fbp;
+  if (d.fbc) user_data.fbc = d.fbc;
+  return send(env, [{
+    event_name: "PageView",
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: d.eventId,
+    action_source: "website",
+    event_source_url: d.url,
+    user_data
+  }]);
+}

@@ -6,7 +6,7 @@
 //
 // Configuração (Workers > onresort > Settings > Variables and Secrets):
 //   META_PIXEL_ID         ID do pixel (já definido no wrangler.jsonc)
-//   META_CAPI_TOKEN       token da API de Conversões (tipo Secret — nunca no código)
+//   Apimeta (ou META_CAPI_TOKEN)  token da API de Conversões (tipo Secret — nunca no código)
 //   META_TEST_EVENT_CODE  opcional: código de teste do Gerenciador de Eventos
 //   META_API_VERSION      opcional: versão da Graph API (padrão v23.0)
 
@@ -57,15 +57,20 @@ function customData(lead, extra) {
   return Object.assign(c, extra || {});
 }
 
+// aceita o secret com o nome "Apimeta" (criado no painel) ou "META_CAPI_TOKEN"
+function metaToken(env) {
+  return String(env.Apimeta || env.APIMETA || env.apimeta || env.META_CAPI_TOKEN || "").trim();
+}
+
 export function metaEnabled(env) {
-  return !!(env.META_PIXEL_ID && env.META_CAPI_TOKEN);
+  return !!(env.META_PIXEL_ID && metaToken(env));
 }
 
 async function send(env, events) {
   if (!metaEnabled(env)) return { ok: false, skipped: true };
   const version = env.META_API_VERSION || "v23.0";
   const base = env.META_ENDPOINT || "https://graph.facebook.com"; // META_ENDPOINT só para testes locais
-  const url = `${base}/${version}/${env.META_PIXEL_ID}/events?access_token=${encodeURIComponent(env.META_CAPI_TOKEN)}`;
+  const url = `${base}/${version}/${env.META_PIXEL_ID}/events?access_token=${encodeURIComponent(metaToken(env))}`;
   const body = { data: events };
   if (env.META_TEST_EVENT_CODE) body.test_event_code = env.META_TEST_EVENT_CODE;
   try {

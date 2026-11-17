@@ -54,11 +54,10 @@
     return acao.charAt(0).toLowerCase() + acao.slice(1);
   }
   // Mensagem padrão: "Olá, meu nome é Fulano, telefone X, e-mail Y, e quero <ação do botão>."
-  function mensagemPadrao(acao, lead) {
-    if (!lead || !lead.nome) return "Olá, quero " + acao + ".";
-    return "Olá, meu nome é " + lead.nome + ", telefone " + lead.telefone +
-      (lead.email ? ", e-mail " + lead.email : "") + ", e quero " + acao + ".";
-  }
+  // Mensagem que chega no WhatsApp do corretor (igual para todos os botões).
+  // A origem detalhada (seção e botão) continua sendo gravada no CRM.
+  var MENSAGEM_WHATSAPP = "Olá, quero falar sobre o ON Resort.";
+  function mensagemPadrao() { return MENSAGEM_WHATSAPP; }
   // último botão clicado que leva ao formulário de contato (para saber de onde veio)
   var ultimoCta = null;
   document.addEventListener("click", function (e) {

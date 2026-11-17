@@ -1,7 +1,8 @@
 // Protege o painel /crm e a API /api/admin com usuário e senha (HTTP Basic).
-// Configure no Cloudflare Pages > Settings > Variables and Secrets:
-//   CRM_SENHA   (obrigatório, tipo Secret)
-//   CRM_USUARIO (opcional, padrão "admin")
+// Login padrão: usuário "admin" e senha "admin".
+// Para trocar a senha sem mexer no código, crie no Cloudflare Pages > Settings > Variables and Secrets:
+//   CRM_SENHA   (tipo Secret) — substitui a senha padrão
+//   CRM_USUARIO (opcional)    — substitui o usuário padrão
 const PROTEGIDO = /^\/(crm(\/|$)|api\/admin(\/|$))/;
 
 function igual(a, b) {
@@ -15,16 +16,14 @@ export async function onRequest({ request, env, next }) {
   const url = new URL(request.url);
   if (!PROTEGIDO.test(url.pathname)) return next();
 
-  if (!env.CRM_SENHA) {
-    return new Response("CRM bloqueado: defina a variável secreta CRM_SENHA no projeto do Cloudflare Pages.", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
-  }
   const usuario = env.CRM_USUARIO || "admin";
+  const senha = env.CRM_SENHA || "admin";
   const auth = request.headers.get("Authorization") || "";
   if (auth.startsWith("Basic ")) {
     let dec = "";
     try { dec = atob(auth.slice(6)); } catch (_) {}
     const i = dec.indexOf(":");
-    if (i > -1 && igual(dec.slice(0, i), usuario) && igual(dec.slice(i + 1), env.CRM_SENHA)) {
+    if (i > -1 && igual(dec.slice(0, i), usuario) && igual(dec.slice(i + 1), senha)) {
       const res = await next();
       const out = new Response(res.body, res);
       out.headers.set("Cache-Control", "no-store");

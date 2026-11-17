@@ -8,11 +8,11 @@
  *                    em /api/leads (Worker onresort + D1). Painel em /admin.
  */
 window.ONRESORT_CONFIG = {
-  whatsapp: "5521996903909",
-  telefoneExibicao: "(21) 99690-3909",
-  corretorNome: "Rafael Bodas",
+  whatsapp: "5521983799691",
+  telefoneExibicao: "(21) 98379-9691",
+  corretorNome: "Carla Jansen",
   imobiliaria: "JBI",
-  creci: "46697",
+  creci: "94190",
   mensagemWhatsApp: "Olá! Tenho interesse no ON Resort Cidade Jardim e gostaria de receber mais informações.",
   formEndpoint: "/api/leads"
 };

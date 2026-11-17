@@ -61,9 +61,6 @@
   $$(".mode__label").forEach(function (l) {
     l.addEventListener("click", function () { setMode(l.getAttribute("data-for")); });
   });
-  // alterna sozinho uma vez para mostrar que é interativo
-  var autoT = setTimeout(function () { if (hero.getAttribute("data-mode") === "viver" && window.scrollY < 50) setMode("investir"); }, 4200);
-  sw.addEventListener("click", function () { clearTimeout(autoT); }, { once: true });
 
   /* ---------- Tabs ---------- */
   $$(".tabs").forEach(function (tabs) {

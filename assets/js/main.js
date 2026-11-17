@@ -12,11 +12,16 @@
   var waLink = function (msg) {
     return "https://wa.me/" + (CFG.whatsapp || "") + "?text=" + encodeURIComponent(msg || CFG.mensagemWhatsApp || "");
   };
+  // Os links de WhatsApp abrem o popup de captura; o href fica como fallback sem JS
   $$("[data-whatsapp]").forEach(function (a) {
     a.href = waLink();
     a.target = "_blank";
     a.rel = "noopener";
-    a.addEventListener("click", function () { track("whatsapp_click"); });
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      track("whatsapp_click");
+      openWaModal(a.getAttribute("data-origem") || (a.classList.contains("whats-float") ? "whatsapp-flutuante" : a.closest(".mobile-bar") ? "whatsapp-barra-mobile" : a.closest(".footer") ? "whatsapp-rodape" : "whatsapp-contato"));
+    });
   });
   var ano = $("#ano"); if (ano) ano.textContent = new Date().getFullYear();
 
@@ -158,59 +163,108 @@
     return o;
   }
 
+  /* ---------- Envio para o CRM ---------- */
+  var LS_KEY = "onresort_lead";
+  function remember(lead) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify({ nome: lead.nome, telefone: lead.telefone, email: lead.email, interesse: lead.interesse })); } catch (_) {}
+  }
+  function recall() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY) || "null"); } catch (_) { return null; }
+  }
+  function buildLead(form, origem) {
+    var objetivo = (form.querySelector('input[name="objetivo"]:checked') || {}).value || "";
+    return Object.assign({
+      nome: form.nome.value.trim(), telefone: form.telefone.value, email: form.email.value.trim(),
+      interesse: form.interesse ? form.interesse.value : "", objetivo: objetivo,
+      website: form.website ? form.website.value : "",
+      origem: origem, pagina: location.href
+    }, utm());
+  }
+  // keepalive garante a entrega mesmo que a pessoa saia da página (ex.: indo para o WhatsApp)
+  function sendLead(lead) {
+    if (!CFG.formEndpoint) return Promise.reject(new Error("sem endpoint"));
+    var body = JSON.stringify(lead);
+    try {
+      return fetch(CFG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: body, keepalive: true })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok || d.ok === false) throw new Error(d.erro || r.status); return d; }); });
+    } catch (err) {
+      if (navigator.sendBeacon && navigator.sendBeacon(CFG.formEndpoint, new Blob([body], { type: "text/plain" }))) return Promise.resolve({ ok: true });
+      return Promise.reject(err);
+    }
+  }
+  function validate(form, needInteresse) {
+    var ok = true, nome = form.nome, tel = form.telefone, email = form.email, cons = form.consentimento;
+    [nome, tel, email, form.interesse].forEach(function (f) { if (f) f.classList.remove("is-invalid"); });
+    cons.closest(".consent").classList.remove("is-invalid");
+    if (nome.value.trim().length < 2) { nome.classList.add("is-invalid"); ok = false; }
+    if (tel.value.replace(/\D/g, "").length < 10) { tel.classList.add("is-invalid"); ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { email.classList.add("is-invalid"); ok = false; }
+    if (needInteresse && form.interesse && !form.interesse.value) { form.interesse.classList.add("is-invalid"); ok = false; }
+    if (!cons.checked) { cons.closest(".consent").classList.add("is-invalid"); ok = false; }
+    return ok;
+  }
+
+  /* ---------- Popup do WhatsApp ---------- */
+  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "whatsapp", lastFocus = null;
+  function openWaModal(origem) {
+    waOrigem = origem || "whatsapp";
+    var saved = recall();
+    if (saved) ["nome", "telefone", "email", "interesse"].forEach(function (k) { if (saved[k] && !waForm[k].value) waForm[k].value = saved[k]; });
+    var pre = document.querySelector('#formFooter select[name="interesse"]');
+    if (pre && pre.value && !waForm.interesse.value) waForm.interesse.value = pre.value;
+    $(".lead-form__msg", waForm).textContent = "";
+    lastFocus = document.activeElement;
+    waModal.hidden = false; document.body.style.overflow = "hidden";
+    setTimeout(function () { (waForm.nome.value ? waForm.querySelector("button[type=submit]") : waForm.nome).focus(); }, 50);
+  }
+  function closeWaModal() {
+    waModal.hidden = true; document.body.style.overflow = "";
+    if (lastFocus) lastFocus.focus();
+  }
+  $(".wa-modal__close", waModal).addEventListener("click", closeWaModal);
+  waModal.addEventListener("click", function (e) { if (e.target === waModal) closeWaModal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !waModal.hidden) closeWaModal(); });
+  waForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var msg = $(".lead-form__msg", waForm);
+    msg.className = "lead-form__msg";
+    if (!validate(waForm, true)) { msg.classList.add("is-err"); msg.textContent = "Preencha os campos destacados."; return; }
+    var lead = buildLead(waForm, waOrigem);
+    remember(lead);
+    // 1) grava o lead no CRM (independe de a conversa ser concluída)
+    sendLead(lead).catch(function () {});
+    track("lead_submit", { origem: lead.origem, interesse: lead.interesse });
+    // 2) abre o WhatsApp já com a mensagem pronta
+    var txt = "Olá! Sou " + lead.nome + " e tenho interesse no ON Resort Cidade Jardim" +
+      (lead.interesse && lead.interesse !== "Ainda não sei" ? " (" + lead.interesse + ")" : "") +
+      ". Gostaria de receber a tabela e o estudo de rentabilidade.";
+    var url = waLink(txt);
+    var w = window.open(url, "_blank", "noopener");
+    if (!w) location.href = url;
+    msg.classList.add("is-ok"); msg.textContent = "Abrindo o WhatsApp…";
+    setTimeout(closeWaModal, 1200);
+  });
+
+  /* ---------- Formulários da página ---------- */
   $$(".lead-form").forEach(function (form) {
     var msg = $(".lead-form__msg", form);
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       msg.className = "lead-form__msg"; msg.textContent = "";
-      var ok = true;
-      var nome = form.nome, tel = form.telefone, email = form.email, cons = form.consentimento;
-      [nome, tel, email].forEach(function (f) { f.classList.remove("is-invalid"); });
-      cons.closest(".consent").classList.remove("is-invalid");
-      if (nome.value.trim().length < 2) { nome.classList.add("is-invalid"); ok = false; }
-      if (tel.value.replace(/\D/g, "").length < 10) { tel.classList.add("is-invalid"); ok = false; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { email.classList.add("is-invalid"); ok = false; }
-      if (!cons.checked) { cons.closest(".consent").classList.add("is-invalid"); ok = false; }
-      if (!ok) { msg.classList.add("is-err"); msg.textContent = "Confira os campos destacados."; return; }
-
-      var objetivo = (form.querySelector('input[name="objetivo"]:checked') || {}).value || "";
-      var interesse = form.interesse ? form.interesse.value : "";
-      var lead = Object.assign({
-        empreendimento: "ON Resort Cidade Jardim",
-        nome: nome.value.trim(), telefone: tel.value, email: email.value.trim(),
-        objetivo: objetivo, interesse: interesse,
-        origem: form.getAttribute("data-origem"), pagina: location.href, data: new Date().toISOString()
-      }, utm());
-
+      if (!validate(form, false)) { msg.classList.add("is-err"); msg.textContent = "Confira os campos destacados."; return; }
+      var lead = buildLead(form, form.getAttribute("data-origem"));
+      remember(lead);
       var btn = form.querySelector('button[type="submit"]');
       btn.disabled = true; var label = btn.textContent; btn.textContent = "Enviando...";
-
-      var done = function () {
-        track("lead_submit", { origem: lead.origem, objetivo: objetivo });
+      sendLead(lead).then(function () {
+        track("lead_submit", { origem: lead.origem, objetivo: lead.objetivo });
         msg.classList.add("is-ok");
-        msg.textContent = "Recebemos seus dados! Em breve um especialista entra em contato.";
-        btn.disabled = false; btn.textContent = label;
+        msg.innerHTML = "Recebemos seus dados! Em breve um especialista entra em contato. <a href=\"" + waLink("Olá! Sou " + lead.nome + " e acabei de pedir o estudo de rentabilidade do ON Resort Cidade Jardim.") + "\" target=\"_blank\" rel=\"noopener\">Prefere falar agora no WhatsApp?</a>";
         form.reset();
-        if (CFG.abrirWhatsAppAposEnvio || !CFG.formEndpoint) {
-          var txt = "Olá! Tenho interesse no ON Resort Cidade Jardim.\n" +
-            "Nome: " + lead.nome + "\nTelefone: " + lead.telefone + "\nE-mail: " + lead.email +
-            (objetivo ? "\nObjetivo: " + objetivo : "") + (interesse ? "\nTipologia: " + interesse : "");
-          window.open(waLink(txt), "_blank", "noopener");
-        }
-      };
-
-      if (CFG.formEndpoint) {
-        fetch(CFG.formEndpoint, {
-          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(lead)
-        }).then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
-          .catch(function () {
-            btn.disabled = false; btn.textContent = label;
-            msg.classList.add("is-err");
-            msg.textContent = "Não foi possível enviar agora. Tente pelo WhatsApp.";
-          });
-      } else {
-        done();
-      }
+      }).catch(function () {
+        msg.classList.add("is-err");
+        msg.textContent = "Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp.";
+      }).then(function () { btn.disabled = false; btn.textContent = label; });
     });
   });
 })();

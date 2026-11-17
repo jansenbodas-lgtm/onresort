@@ -23,4 +23,6 @@ python3 -m http.server 8000
 Acesse http://localhost:8000.
 
 ## Publicação
+No **Cloudflare Pages**: comando de build `npm run build` e diretório de saída `dist`. Também funciona sem comando de build, com diretório de saída `/`.
+
 Qualquer hospedagem estática serve: Netlify, Vercel, Cloudflare Pages, GitHub Pages ou a hospedagem atual do site (basta subir os arquivos para a pasta `/onresort`).

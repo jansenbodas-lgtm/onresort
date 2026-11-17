@@ -27,23 +27,28 @@ No **Cloudflare Pages**: comando de build `npm run build` e diretório de saída
 
 Qualquer hospedagem estática serve: Netlify, Vercel, Cloudflare Pages, GitHub Pages ou a hospedagem atual do site (basta subir os arquivos para a pasta `/onresort`).
 
-## CRM de leads
+## CRM de leads (Worker `onresort`)
 
-Todo lead (formulários da página e popup do WhatsApp) é gravado no CRM próprio, mesmo que a pessoa não conclua a conversa no WhatsApp.
+O site roda como Cloudflare Worker com arquivos estáticos (`wrangler.jsonc` + `src/worker.js`).
+Todo lead (formulários e popup do WhatsApp) é gravado no CRM, mesmo que a pessoa não conclua a conversa no WhatsApp.
 
-- **Banco:** Cloudflare D1 `onresort-crm` (tabela `leads`, ver `migrations/0001_leads.sql`).
-- **API pública:** `POST /api/leads` (`functions/api/leads.js`). Deduplica pelo telefone e registra cada novo contato nas notas.
-- **Painel:** `/crm`, login padrão **admin / admin**. Lista, busca, filtros, status do funil, notas, botão de WhatsApp para o lead e exportação CSV.
-- **API do painel:** `/api/admin/leads` (protegida pelo mesmo login).
+- **Painel:** `https://onresort.jansenbodas.workers.dev/admin` · login padrão **admin / admin**.
+- **Pipeline:** Novo lead → Tentando contato → Consegui falar → Marcou visita → Visitou → Fez proposta → Venda fechada / Perdido. Arraste os cards entre as etapas.
+- **Ficha do lead:** dados, unidade, valor, visita agendada, próxima ação, motivo de perda, observações, histórico (ligação, WhatsApp, e-mail, visita, nota) e atalhos de WhatsApp/ligar/e-mail.
+- **Lista e CSV:** visão em tabela, busca, filtros e exportação.
+- **Banco:** Cloudflare D1 `onresort-crm` (binding `DB`, já declarado no `wrangler.jsonc`). Estrutura em `migrations/0001_leads.sql`; o Worker cria as tabelas se faltarem.
+- **API:** `POST /api/leads` é público (usado pelo site, deduplica pelo telefone). Leitura, edição, exclusão e notas em `/api/leads` exigem o login.
 
-### Configuração no Cloudflare Pages (uma vez)
-1. **Settings → Bindings → Add → D1 database**: nome da variável `DB`, banco `onresort-crm`.
-2. (Recomendado) **Settings → Variables and Secrets**: crie `CRM_SENHA` (tipo *Secret*) para trocar a senha padrão `admin`. Opcional: `CRM_USUARIO` e `LEAD_WEBHOOK_URL` (recebe cada lead em JSON, para avisar no Make/Zapier/n8n/Slack).
-3. Faça um novo deploy. O painel fica em `https://SEU-DOMINIO/crm`.
+### Variáveis opcionais (Workers > onresort > Settings > Variables and Secrets)
+- `CRM_SENHA` (Secret): troca a senha padrão `admin`. `CRM_USUARIO` troca o usuário.
+- `LEAD_WEBHOOK_URL`: recebe cada lead em JSON (Make, Zapier, n8n, Slack).
+
+### Deploy
+Workers Builds: comando de build `npm run build`, comando de deploy `npx wrangler deploy`.
 
 ### Testar localmente
 ```bash
 npm run build
-npx wrangler pages dev dist --d1 DB=onresort-crm-local
+npx wrangler dev --local
 ```
-Crie um arquivo `.dev.vars` com `CRM_SENHA=uma-senha` (já ignorado pelo git).
+Acesse http://localhost:8787 e http://localhost:8787/admin (admin/admin).

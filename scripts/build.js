@@ -4,7 +4,7 @@ const path = require("path");
 
 const root = path.join(__dirname, "..");
 const out = path.join(root, "dist");
-const items = ["index.html", "assets", "crm", "_headers", "_routes.json"];
+const items = ["index.html", "assets", "_headers"];
 
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });

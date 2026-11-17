@@ -1,0 +1,22 @@
+{
+  // Worker "onresort" (Cloudflare Workers Builds): landing page + CRM em /admin
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "onresort",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-06-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "onresort-crm",
+      "database_id": "65fe54a8-ab73-40ff-bc1f-355da5984443"
+    }
+  ],
+  "rules": [
+    { "type": "Text", "globs": ["**/*.html"], "fallthrough": true }
+  ],
+  "observability": { "enabled": true }
+}

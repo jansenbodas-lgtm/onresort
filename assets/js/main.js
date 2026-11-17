@@ -20,7 +20,8 @@
     a.addEventListener("click", function (e) {
       e.preventDefault();
       track("whatsapp_click");
-      openWaModal(a.getAttribute("data-origem") || (a.classList.contains("whats-float") ? "whatsapp-flutuante" : a.closest(".mobile-bar") ? "whatsapp-barra-mobile" : a.closest(".footer") ? "whatsapp-rodape" : "whatsapp-contato"));
+      openWaModal(a.getAttribute("data-origem") || (a.classList.contains("whats-float") ? "whatsapp-flutuante" : a.closest(".mobile-bar") ? "whatsapp-barra-mobile" : a.closest(".footer") ? "whatsapp-rodape" : "whatsapp-contato"),
+        (a.textContent || "").trim() || a.getAttribute("aria-label") || "WhatsApp");
     });
   });
   $$("[data-creci-line]").forEach(function (el) { el.hidden = !CFG.creci; });
@@ -172,13 +173,15 @@
   function recall() {
     try { return JSON.parse(localStorage.getItem(LS_KEY) || "null"); } catch (_) { return null; }
   }
-  function buildLead(form, origem) {
+  function buildLead(form, origem, cta) {
     var objetivo = (form.querySelector('input[name="objetivo"]:checked') || {}).value || "";
+    var btn = form.querySelector('button[type="submit"]');
     return Object.assign({
       nome: form.nome.value.trim(), telefone: form.telefone.value, email: form.email.value.trim(),
       interesse: form.interesse ? form.interesse.value : "", objetivo: objetivo,
       website: form.website ? form.website.value : "",
-      origem: origem, pagina: location.href
+      origem: origem, cta: cta || (btn ? btn.textContent.trim() : ""),
+      pagina: location.href, referrer: document.referrer
     }, utm());
   }
   // keepalive garante a entrega mesmo que a pessoa saia da página (ex.: indo para o WhatsApp)
@@ -187,7 +190,7 @@
     var body = JSON.stringify(lead);
     try {
       return fetch(CFG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: body, keepalive: true })
-        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok || d.ok === false) throw new Error(d.erro || r.status); return d; }); });
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok || d.ok === false) throw new Error(d.error || d.erro || r.status); return d; }); });
     } catch (err) {
       if (navigator.sendBeacon && navigator.sendBeacon(CFG.formEndpoint, new Blob([body], { type: "text/plain" }))) return Promise.resolve({ ok: true });
       return Promise.reject(err);
@@ -206,9 +209,10 @@
   }
 
   /* ---------- Popup do WhatsApp ---------- */
-  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "whatsapp", lastFocus = null;
-  function openWaModal(origem) {
+  var waModal = $("#waModal"), waForm = $("#waForm"), waOrigem = "whatsapp", waCta = "", lastFocus = null;
+  function openWaModal(origem, cta) {
     waOrigem = origem || "whatsapp";
+    waCta = cta || "";
     var saved = recall();
     if (saved) ["nome", "telefone", "email", "interesse"].forEach(function (k) { if (saved[k] && !waForm[k].value) waForm[k].value = saved[k]; });
     var pre = document.querySelector('#formFooter select[name="interesse"]');
@@ -230,7 +234,7 @@
     var msg = $(".lead-form__msg", waForm);
     msg.className = "lead-form__msg";
     if (!validate(waForm, true)) { msg.classList.add("is-err"); msg.textContent = "Preencha os campos destacados."; return; }
-    var lead = buildLead(waForm, waOrigem);
+    var lead = buildLead(waForm, waOrigem, waCta);
     remember(lead);
     // 1) grava o lead no CRM (independe de a conversa ser concluída)
     sendLead(lead).catch(function () {});

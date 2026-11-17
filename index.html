@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ON Resort Cidade Jardim | Lançamento RJZ Cyrela na Barra Olímpica</title>
+  <meta name="description" content="ON Resort Cidade Jardim: studios, 1 e 2 quartos e gardens de 32 a 92 m² dentro do bairro planejado Cidade Jardim, na Barra Olímpica. Mais de 5 mil m² de lazer de resort. Perfeito para viver, ideal para investir.">
+  <meta name="theme-color" content="#3b1f14">
+  <link rel="canonical" href="https://www.seudominio.com.br/onresort">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ON Resort Cidade Jardim | RJZ Cyrela">
+  <meta property="og:description" content="Viva em um resort ou torne-o um investimento. Studios, 1 e 2 quartos e gardens no Cidade Jardim, Barra Olímpica.">
+  <meta property="og:image" content="assets/img/hero.jpg">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/img/hero.jpg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- Cole aqui o Google Tag Manager / Meta Pixel, se houver -->
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header" id="topo">
+  <div class="container header__inner">
+    <a href="#topo" class="brand" aria-label="ON Resort Cidade Jardim">
+      <svg class="brand__mark" viewBox="0 0 64 30" aria-hidden="true"><rect x="1" y="1" width="62" height="28" rx="14" fill="currentColor"/><circle cx="49" cy="15" r="11" fill="none" stroke="var(--brand-bg, #3b1f14)" stroke-width="3.2"/></svg>
+      <span class="brand__text"><b>N RESORT</b><small>Cidade Jardim</small></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Principal">
+      <a href="#empreendimento">O ON Resort</a>
+      <a href="#lazer">Lazer</a>
+      <a href="#plantas">Plantas</a>
+      <a href="#bairro">Cidade Jardim</a>
+      <a href="#localizacao">Localização</a>
+      <a href="#investir">Investir</a>
+    </nav>
+    <a href="#contato" class="btn btn--sm btn--light header__cta">Quero saber mais</a>
+    <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero" data-mode="viver">
+  <img class="hero__bg" src="assets/img/hero.jpg" alt="Vista aérea das piscinas do ON Resort Cidade Jardim">
+  <div class="hero__shade"></div>
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow eyebrow--light">Lançamento RJZ Cyrela · Barra Olímpica</p>
+      <h1 class="hero__title">A vida muda com o modo que você escolhe <em data-mode-text="viver">viver</em><em data-mode-text="investir">investir</em>.</h1>
+
+      <div class="mode" role="group" aria-label="Escolha o seu modo">
+        <span class="mode__label" data-for="viver">Viver</span>
+        <button class="switch" id="modeSwitch" role="switch" aria-checked="false" aria-label="Alternar entre modo viver e modo investir"><span class="switch__knob"></span></button>
+        <span class="mode__label" data-for="investir">Investir</span>
+      </div>
+
+      <ul class="hero__points" data-mode-panel="viver">
+        <li>+5 mil m² de lazer de resort para todos os dias</li>
+        <li>Piscina com raia de 25 m, spa, sauna e fitness</li>
+        <li>Dentro do bairro planejado Cidade Jardim</li>
+      </ul>
+      <ul class="hero__points" data-mode-panel="investir">
+        <li>Unidades compactas e eficientes, de 32 a 92 m²</li>
+        <li>Projeto Airbnb-friendly com estrutura de hospitalidade</li>
+        <li>Barra Olímpica: região em plena valorização</li>
+      </ul>
+
+      <div class="hero__tags">
+        <span>Gardens</span><span>Studios</span><span>1 e 2 quartos</span>
+      </div>
+    </div>
+
+    <!-- Formulário principal -->
+    <form class="lead-form" id="formHero" novalidate data-origem="hero">
+      <h2 class="lead-form__title">Receba a tabela de preços e condições de lançamento</h2>
+      <label class="field"><span>Nome</span><input name="nome" type="text" autocomplete="name" required placeholder="Seu nome"></label>
+      <label class="field"><span>WhatsApp</span><input name="telefone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="(21) 99999-9999"></label>
+      <label class="field"><span>E-mail</span><input name="email" type="email" autocomplete="email" required placeholder="voce@email.com"></label>
+      <fieldset class="field field--choice">
+        <legend>Seu objetivo</legend>
+        <label><input type="radio" name="objetivo" value="Morar" checked> Morar</label>
+        <label><input type="radio" name="objetivo" value="Investir"> Investir</label>
+        <label><input type="radio" name="objetivo" value="Os dois"> Os dois</label>
+      </fieldset>
+      <label class="consent"><input type="checkbox" name="consentimento" required> <span>Aceito receber contato e concordo com a <a href="#privacidade">política de privacidade</a>.</span></label>
+      <button class="btn btn--accent btn--block" type="submit">Quero receber</button>
+      <p class="lead-form__msg" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+  <a href="#empreendimento" class="hero__scroll" aria-label="Rolar para o conteúdo"><span></span></a>
+</section>
+
+<!-- ============ NÚMEROS ============ -->
+<section class="stats" aria-label="Destaques">
+  <div class="container stats__grid">
+    <div class="stat"><b>+5 mil m²</b><span>de lazer e convivência</span></div>
+    <div class="stat"><b>32 a 92 m²</b><span>gardens, studios, 1 e 2 quartos</span></div>
+    <div class="stat"><b>25 m</b><span>piscina com raia</span></div>
+    <div class="stat"><b>3 edifícios</b><span>Caribe, Fiji e Polinésia</span></div>
+  </div>
+</section>
+
+<!-- ============ EMPREENDIMENTO ============ -->
+<section class="section intro" id="empreendimento">
+  <div class="container intro__grid">
+    <div class="intro__media reveal">
+      <img src="assets/img/logo-wall.jpg" alt="Logotipo ON Resort Cidade Jardim em parede de aço corten" loading="lazy">
+      <img class="intro__circle" src="assets/img/lifestyle-piscina.jpg" alt="Mulher relaxando à beira da piscina" loading="lazy">
+    </div>
+    <div class="intro__copy reveal">
+      <p class="eyebrow">O empreendimento</p>
+      <h2 class="h2">Um endereço para quem quer viver em um resort <span class="muted">ou torná-lo um investimento.</span></h2>
+      <p>Lazer extraordinário para todos os dias e estrutura completa de hospitalidade. Você escolhe o modo, e o ON Resort Cidade Jardim entrega os dois.</p>
+      <p>Há dias que pedem movimento. Outros, pausa. Corrida ao ar livre ou acordar sem correria? Sol para recarregar ou massagem para relaxar? Aqui, o melhor modo de aproveitar o tempo é no seu ritmo.</p>
+      <div class="intro__chips">
+        <span>Pausa</span><span>Energia</span><span>Encontros</span><span>Diversão</span><span>Experience</span>
+      </div>
+      <a href="#contato" class="btn btn--dark">Agendar atendimento</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FACHADA ============ -->
+<section class="banner">
+  <img src="assets/img/fachada.jpg" alt="Guarita e acessos do ON Resort Cidade Jardim" loading="lazy">
+  <div class="banner__caption container">
+    <p>Av. Vice-Presidente José Alencar, 1.305<br><span>Cidade Jardim · Barra Olímpica · Rio de Janeiro</span></p>
+  </div>
+  <span class="tag-illus">Ilustração artística</span>
+</section>
+
+<!-- ============ LAZER ============ -->
+<section class="section lazer" id="lazer">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="eyebrow">Lazer de resort</p>
+      <h2 class="h2">O melhor modo de aproveitar o tempo é <em>no seu ritmo.</em></h2>
+      <p class="lead">Mais de 5 mil m² de infraestrutura completa de lazer e convivência, assinada por Benedito Abbud no paisagismo e Studio RO+CA na decoração.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Categorias de lazer">
+      <button role="tab" class="tab is-active" aria-selected="true" data-tab="pausa">Pausa</button>
+      <button role="tab" class="tab" aria-selected="false" data-tab="energia">Energia</button>
+      <button role="tab" class="tab" aria-selected="false" data-tab="encontros">Encontros</button>
+      <button role="tab" class="tab" aria-selected="false" data-tab="diversao">Diversão</button>
+      <button role="tab" class="tab" aria-selected="false" data-tab="experience">Experience</button>
+    </div>
+
+    <div class="gallery is-active" data-panel="pausa" role="tabpanel">
+      <figure class="g-item g-item--wide"><img src="assets/img/pool-lounge.jpg" alt="Pool lounge" loading="lazy"><figcaption>Pool lounge</figcaption></figure>
+      <figure class="g-item"><img src="assets/img/piscina-raia.jpg" alt="Piscina com raia de 25 m" loading="lazy"><figcaption>Piscina com raia de 25 m</figcaption></figure>
+      <figure class="g-item"><img src="assets/img/relax-lounge.jpg" alt="Relax lounge" loading="lazy"><figcaption>Relax lounge</figcaption></figure>
+      <figure class="g-item g-item--wide"><img src="assets/img/spa.jpg" alt="Spa" loading="lazy"><figcaption>Spa</figcaption></figure>
+      <figure class="g-item"><img src="assets/img/massage.jpg" alt="Massage space" loading="lazy"><figcaption>Massage space</figcaption></figure>
+      <figure class="g-item"><img src="assets/img/sauna.jpg" alt="Sauna úmida" loading="lazy"><figcaption>Sauna úmida</figcaption></figure>
+    </div>
+
+    <div class="gallery" data-panel="energia" role="tabpanel" hidden>
+      <figure class="g-item g-item--wide"><img src="assets/img/fitness.jpg" alt="Fitness" loading="lazy"><figcaption>Fitness</figcaption></figure>
+      <figure class="g-item g-item--wide"><img src="assets/img/quadras.jpg" alt="Quadra recreativa e quadra de areia" loading="lazy"><figcaption>Quadra recreativa e quadra de areia</figcaption></figure>
+      <figure class="g-item g-item--full"><img src="assets/img/lazer-aereo.jpg" alt="Vista aérea do lazer" loading="lazy"><figcaption>Vista aérea do lazer</figcaption></figure>
+    </div>
+
+    <div class="gallery" data-panel="encontros" role="tabpanel" hidden>
+      <figure class="g-item g-item--wide"><img src="assets/img/festas.jpg" alt="Salão de festas" loading="lazy"><figcaption>Festas</figcaption></figure>
+      <figure class="g-item"><img src="assets/img/lounge-festas.jpg" alt="Lounge festas com vista para o Parque Linear" loading="lazy"><figcaption>Lounge festas com vista para o Parque Linear</figcaption></figure>
+      <figure class="g-item"><img src="assets/img/pool-house.jpg" alt="Pool house" loading="lazy"><figcaption>Pool house</figcaption></figure>
+      <figure class="g-item g-item--wide"><img src="assets/img/pool-bar.jpg" alt="Pool bar" loading="lazy"><figcaption>Pool bar</figcaption></figure>
+      <figure class="g-item g-item--wide"><img src="assets/img/churrasqueira.jpg" alt="Churrasqueira gourmet" loading="lazy"><figcaption>Churrasqueira gourmet</figcaption></figure>
+      <figure class="g-item g-item--wide"><img src="assets/img/terraco-poolhouse.jpg" alt="Terraço da pool house" loading="lazy"><figcaption>Terraço da pool house com vista para o Parque Linear</figcaption></figure>
+      <figure class="g-item g-item--wide"><img src="assets/img/jogos.jpg" alt="Espaço jogos" loading="lazy"><figcaption>Espaço jogos</figcaption></figure>
+    </div>
+
+    <div class="gallery" data-panel="diversao" role="tabpanel" hidden>
+      <figure class="g-item g-item--wide"><img src="assets/img/brinquedoteca.jpg" alt="Brinquedoteca" loading="lazy"><figcaption>Brinquedoteca</figcaption></figure>
+      <figure class="g-item g-item--wide"><img src="assets/img/piscina-infantil.jpg" alt="Piscina infantil" loading="lazy"><figcaption>Piscina infantil</figcaption></figure>
+      <figure class="g-item g-item--full"><img src="assets/img/playground.jpg" alt="Playground" loading="lazy"><figcaption>Playground</figcaption></figure>
+    </div>
+
+    <div class="gallery" data-panel="experience" role="tabpanel" hidden>
+      <figure class="g-item g-item--wide"><img src="assets/img/lobby.jpg" alt="Lobby do Ed. Caribe" loading="lazy"><figcaption>Lobby do Ed. Caribe</figcaption></figure>
+      <figure class="g-item"><img src="assets/img/coworking.jpg" alt="Coworking" loading="lazy"><figcaption>Coworking</figcaption></figure>
+      <figure class="g-item"><img src="assets/img/taste-lounge.jpg" alt="Taste lounge" loading="lazy"><figcaption>Taste lounge</figcaption></figure>
+      <figure class="g-item g-item--full"><img src="assets/img/cokitchen.jpg" alt="Cokitchen" loading="lazy"><figcaption>Cokitchen</figcaption></figure>
+    </div>
+    <p class="note">Imagens: ilustrações artísticas. Paisagismo, equipamentos e mobiliário sujeitos a alterações.</p>
+  </div>
+</section>
+
+<!-- ============ SERVIÇOS ============ -->
+<section class="section services" id="servicos">
+  <div class="container services__grid">
+    <div class="services__intro reveal">
+      <p class="eyebrow eyebrow--light">Experience</p>
+      <h2 class="h2">Facilidades para tornar seu tempo <em>cada vez mais seu.</em></h2>
+      <p>Padrão de hospitalidade internacional, com serviços pensados para quem mora e para quem recebe hóspedes.</p>
+      <img src="assets/img/bem-vindo.jpg" alt="Placa Bem-vindo ao ON Resort na porta do apartamento" loading="lazy">
+    </div>
+    <ul class="services__list reveal">
+      <li><b>Personal Concierge</b><span>Profissional para atender às necessidades dos moradores.</span></li>
+      <li><b>Shuttle</b><span>Rota circular para o Parque Olímpico, Shopping Metropolitano e Praia da Barra.</span></li>
+      <li><b>Café da manhã</b><span>Servido no Pool Bar e no Taste Lounge.</span></li>
+      <li><b>Pool Bar</b><span>Operação profissional terceirizada de bar.</span></li>
+      <li><b>Daily Cleaning¹</b><span>Arrumação de cama, coleta de lixo e higienização de banheiros.</span></li>
+      <li><b>Fast Market¹</b><span>Minimercado inteligente com autoatendimento.</span></li>
+      <li><b>Manobrista²</b><span>Profissionais 24h no estacionamento.</span></li>
+      <li><b>Bike Share¹</b><span>Bicicletas para uso compartilhado.</span></li>
+      <li><b>Laundry¹</b><span>Espaço com infraestrutura de lavanderia.</span></li>
+      <li><b>Pay per use¹</b><span>Canal para contratar reparos, passadeira e muito mais.</span></li>
+      <li><b>Central de encomendas</b><span>Recebimento e guarda temporária.</span></li>
+      <li><b>Recreação infantil</b><span>Atividades com acompanhamento profissional.</span></li>
+      <li><b>Complexo fitness</b><span>Gestão de atividades e esportes.</span></li>
+      <li><b>Recarga elétrica¹</b><span>Tomadas para carros e bikes elétricas.</span></li>
+      <li><b>Wi-Fi</b><span>Nas áreas comuns sociais.</span></li>
+      <li><b>Gerador</b><span>Grupo gerador entregue.</span></li>
+    </ul>
+    <p class="note note--light">¹Pago conforme uso. ²Para unidades dos Ed. Caribe e Ed. Polinésia. Para mais informações, consultar a Convenção de Condomínio.</p>
+  </div>
+</section>
+
+<!-- ============ PLANTAS ============ -->
+<section class="section plantas" id="plantas">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="eyebrow">Plantas</p>
+      <h2 class="h2">Flexibilidade para quem <em>investe</em>, eficiência para quem <em>vive</em>.</h2>
+    </div>
+
+    <div class="tabs tabs--plans" role="tablist" aria-label="Tipologias">
+      <button role="tab" class="tab is-active" aria-selected="true" data-tab="studio">Studios · 32–33 m²</button>
+      <button role="tab" class="tab" aria-selected="false" data-tab="caribe">Studio ou 1Q · 39–40 m²</button>
+      <button role="tab" class="tab" aria-selected="false" data-tab="fiji">2 quartos · 59–60 m²</button>
+      <button role="tab" class="tab" aria-selected="false" data-tab="gardens">Gardens · 52–92 m²</button>
+    </div>
+
+    <article class="plan is-active" data-panel="studio" role="tabpanel">
+      <div class="plan__imgs">
+        <figure class="plan__fig"><img src="assets/img/planta-studio-polinesia-a.jpg" alt="Planta studio Ed. Polinésia" loading="lazy"></figure>
+        <figure class="plan__fig"><img src="assets/img/planta-studio-polinesia-b.jpg" alt="Planta studio Ed. Polinésia, variação" loading="lazy"></figure>
+      </div>
+      <div class="plan__info">
+        <p class="plan__tower">Ed. Polinésia · 2º ao 15º pavimento</p>
+        <h3>Studios de 32 a 33 m²</h3>
+        <p>Plantas compactas e inteligentes, com varanda, ideais para morar com praticidade ou para locação de curta temporada.</p>
+        <ul class="plan__specs"><li><b>714</b> unidades</li><li>Varanda</li><li>Ducha higiênica</li><li>Infra para ar-condicionado</li></ul>
+        <img class="plan__decor" src="assets/img/studio-polinesia.jpg" alt="Studio decorado do Ed. Polinésia" loading="lazy">
+        <a href="#contato" class="btn btn--dark" data-interesse="Studio 32m²">Quero valores do studio</a>
+      </div>
+    </article>
+
+    <article class="plan" data-panel="caribe" role="tabpanel" hidden>
+      <div class="plan__imgs">
+        <figure class="plan__fig"><figcaption>Opção studio</figcaption><img src="assets/img/planta-caribe-studio.jpg" alt="Planta opção studio Ed. Caribe" loading="lazy"></figure>
+        <figure class="plan__fig"><figcaption>Opção 1 quarto</figcaption><img src="assets/img/planta-caribe-1q.jpg" alt="Planta opção 1 quarto Ed. Caribe" loading="lazy"></figure>
+      </div>
+      <div class="plan__info">
+        <p class="plan__tower">Ed. Caribe · 2º ao 15º pavimento</p>
+        <h3>Studio ou 1 quarto de 39 a 40 m²</h3>
+        <p>Você escolhe a configuração: studio integrado ou sala e quarto separados. Varanda com previsão para kit de bancada e churrasqueira elétrica.</p>
+        <ul class="plan__specs"><li><b>306</b> unidades</li><li>Varanda gourmet</li><li>Opção 1 quarto</li><li>Laje técnica</li></ul>
+        <img class="plan__decor" src="assets/img/studio-caribe.jpg" alt="Apartamento decorado do Ed. Caribe" loading="lazy">
+        <a href="#contato" class="btn btn--dark" data-interesse="Studio ou 1Q 39m²">Quero valores do 1 quarto</a>
+      </div>
+    </article>
+
+    <article class="plan" data-panel="fiji" role="tabpanel" hidden>
+      <div class="plan__imgs">
+        <figure class="plan__fig"><img src="assets/img/planta-fiji-2q-a.jpg" alt="Planta 2 quartos Ed. Fiji" loading="lazy"></figure>
+        <figure class="plan__fig"><img src="assets/img/planta-fiji-2q-b.jpg" alt="Planta 2 quartos com suíte Ed. Fiji" loading="lazy"></figure>
+      </div>
+      <div class="plan__info">
+        <p class="plan__tower">Ed. Fiji · 2º ao 15º pavimento</p>
+        <h3>2 quartos de 59 a 60 m²</h3>
+        <p>Espaço para a família, com suíte, varanda e cozinha com infraestrutura para máquina de lavar louça (em colunas selecionadas).</p>
+        <ul class="plan__specs"><li><b>252</b> unidades</li><li>Suíte</li><li>Varanda</li><li>4 elevadores</li></ul>
+        <img class="plan__decor" src="assets/img/fiji-sala.jpg" alt="Sala do 2 quartos decorado do Ed. Fiji" loading="lazy">
+        <a href="#contato" class="btn btn--dark" data-interesse="2 quartos 60m²">Quero valores do 2 quartos</a>
+      </div>
+    </article>
+
+    <article class="plan" data-panel="gardens" role="tabpanel" hidden>
+      <div class="plan__imgs">
+        <figure class="plan__fig"><figcaption>Garden studio / 1Q</figcaption><img src="assets/img/planta-garden-1q.jpg" alt="Planta garden 1 quarto com piscina" loading="lazy"></figure>
+        <figure class="plan__fig"><figcaption>Garden 2 quartos</figcaption><img src="assets/img/planta-garden-2q-b.jpg" alt="Planta garden 2 quartos com piscina" loading="lazy"></figure>
+      </div>
+      <div class="plan__info">
+        <p class="plan__tower">1º pavimento · Ed. Caribe, Fiji e Polinésia</p>
+        <h3>Gardens de 52 a 92 m² com terraço e previsão de piscina</h3>
+        <p>Terraços descobertos com previsão para kit piscina com deck e chuveiro, alguns com vista para o Parque Linear. Apenas 34 unidades.</p>
+        <ul class="plan__specs"><li>Studio · 52–55 m²</li><li>Studio ou 1Q · 52–55 m²</li><li>2 quartos · 87–92 m²</li><li>Terraço privativo</li></ul>
+        <img class="plan__decor" src="assets/img/garden-terraco.jpg" alt="Terraço com piscina de garden" loading="lazy">
+        <a href="#contato" class="btn btn--dark" data-interesse="Garden">Quero valores dos gardens</a>
+      </div>
+    </article>
+
+    <div class="preference reveal">
+      <div>
+        <p class="eyebrow">Preference Cyrela</p>
+        <h3>Personalize seu apartamento e potencialize seu investimento.</h3>
+      </div>
+      <p>Opções de plantas e acabamentos, fechadura biométrica, olho mágico digital, kits de bancada e churrasqueira elétrica, kit piscina, deck, ar-condicionado, box e muito mais, contratados direto com a construtora, com garantia e pagamento parcelado.</p>
+    </div>
+    <p class="note">Plantas humanizadas ilustrativas, com sugestão de decoração. Móveis e utensílios não fazem parte do contrato. Metragens referentes à área privativa.</p>
+  </div>
+</section>
+
+<!-- ============ MASTERPLAN ============ -->
+<section class="section masterplan">
+  <div class="container masterplan__grid">
+    <figure class="masterplan__img reveal">
+      <img src="assets/img/masterplan.jpg" alt="Masterplan do ON Resort Cidade Jardim" loading="lazy" data-zoom>
+      <figcaption>Toque para ampliar</figcaption>
+    </figure>
+    <div class="reveal">
+      <p class="eyebrow">Masterplan</p>
+      <h2 class="h2">Cada espaço pensado para todos os momentos.</h2>
+      <ul class="masterplan__list">
+        <li>Lobby e lounges</li><li>Massage space</li><li>Sauna úmida</li><li>Repouso com spa</li><li>Coworking</li><li>Laundry</li><li>Cokitchen</li><li>Taste lounge</li><li>Fast market</li><li>Espaço ferramentas</li><li>Fitness</li><li>Brinquedoteca</li><li>Espaço jogos</li><li>Festas e lounge festas</li><li>Pool houses com terraço e piscina</li><li>Playground</li><li>Quadra recreativa</li><li>Quadra de areia</li><li>Churrasqueira gourmet</li><li>Pool bar</li><li>Solário</li><li>Relax lounge</li><li>Deck molhado</li><li>Piscina infantil</li><li>Piscina com raia de 25 m</li><li>Gazebos e daybeds</li><li>Pool lounge</li><li>Bicicletário</li><li>Acesso ao Parque Linear*</li>
+      </ul>
+      <p class="note">*O Parque Linear é uma área pública mantida pela ASCIJA e não faz parte do condomínio ON Resort Cidade Jardim.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CIDADE JARDIM ============ -->
+<section class="section bairro" id="bairro">
+  <div class="container">
+    <div class="bairro__top">
+      <div class="bairro__copy reveal">
+        <p class="eyebrow">Cidade Jardim</p>
+        <h2 class="h2">Tudo em um só lugar. <em>Perfeito para viver, ideal para investir.</em></h2>
+        <p>O Cidade Jardim é um bairro planejado para toda a espontaneidade de viver do carioca. Cercado de áreas verdes, lazer versátil e conveniência completa. Um convite à comodidade e à tranquilidade.</p>
+        <p>Parques, praças, pet places, playgrounds, ciclovia, academia ao ar livre, 2 campos de futebol e 8 quadras (3 poliesportivas e 5 de tênis), além dos Empórios Jardim com comércio, serviços e gastronomia.</p>
+      </div>
+      <div class="bairro__circle reveal"><img src="assets/img/cj-portao.jpg" alt="Portal do bairro Cidade Jardim ao pôr do sol" loading="lazy"></div>
+    </div>
+
+    <div class="mosaic reveal">
+      <img src="assets/img/cj-caminhada.jpg" alt="Caminhada entre áreas verdes no Cidade Jardim" loading="lazy">
+      <img src="assets/img/cj-aereo.jpg" alt="Vista aérea do bairro planejado Cidade Jardim" loading="lazy" class="mosaic__wide">
+      <img src="assets/img/cj-bike.jpg" alt="Passeio de bicicleta no Cidade Jardim" loading="lazy">
+      <img src="assets/img/cj-leitura.jpg" alt="Leitura no parque" loading="lazy">
+      <img src="assets/img/cj-cafe.jpg" alt="Café nos Empórios Jardim" loading="lazy">
+    </div>
+
+    <ul class="chips reveal">
+      <li>Empórios com comércio e serviços</li><li>Gastronomia</li><li>Ônibus exclusivos</li><li>Balsas</li><li>Segurança 24h</li><li>Monitoramento</li><li>Manutenção</li><li>Praças e parques</li><li>Playgrounds</li><li>Ciclovias</li><li>Campos de futebol society</li><li>Quadras poliesportivas</li><li>Quadras de tênis</li><li>Academias ao ar livre</li><li>Pet places</li>
+    </ul>
+    <p class="note">Fotos reais do Cidade Jardim. Paisagismo, equipamentos, espaços e serviços sujeitos a alterações ao longo do tempo. Informações: ascija.com.br.</p>
+  </div>
+</section>
+
+<!-- ============ LOCALIZAÇÃO ============ -->
+<section class="section local" id="localizacao">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="eyebrow">Localização</p>
+      <h2 class="h2">No coração da <em>Barra Olímpica.</em></h2>
+      <p class="lead">Com o Parque Olímpico como referência, palco de grandes festivais e eventos esportivos, a região reúne conveniência, lazer e ampla oferta de serviços, com novos investimentos e melhorias contínuas em infraestrutura.</p>
+    </div>
+  </div>
+  <figure class="local__map reveal">
+    <img src="assets/img/localizacao.jpg" alt="Foto aérea da Barra Olímpica com os principais pontos próximos ao ON Resort" loading="lazy" data-zoom>
+  </figure>
+  <div class="container local__grid">
+    <div class="local__list reveal">
+      <h3>Tudo por perto</h3>
+      <ul>
+        <li>Parque Olímpico e Farmasi Arena</li>
+        <li>Shopping Metropolitano Barra</li>
+        <li>BarraShopping e Shopping Rio 2</li>
+        <li>Riocentro</li>
+        <li>Hospital Barra D’Or, Rede Sarah e Perinatal</li>
+        <li>Colégio Marista São José</li>
+        <li>Terminal BRT da Transolímpica</li>
+        <li>Aeroporto de Jacarepaguá</li>
+        <li>Supermercado Mundial e Hortifruti</li>
+        <li>Empórios Jardim 1 e 2</li>
+        <li>Praia da Barra da Tijuca</li>
+      </ul>
+      <p class="local__addr"><b>Endereço:</b> Av. Vice-Presidente José Alencar, 1.305 – Barra Olímpica, Rio de Janeiro – RJ</p>
+    </div>
+    <div class="local__embed reveal">
+      <iframe title="Mapa do ON Resort Cidade Jardim" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://maps.google.com/maps?q=Av.%20Vice-Presidente%20Jos%C3%A9%20Alencar%2C%201305%20-%20Barra%20Ol%C3%ADmpica%2C%20Rio%20de%20Janeiro&z=15&output=embed"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INVESTIR ============ -->
+<section class="section investir" id="investir">
+  <div class="container">
+    <div class="section__head reveal">
+      <p class="eyebrow eyebrow--light">Por que investir</p>
+      <h2 class="h2">Invista na solidez de um <em>RJZ Cyrela.</em></h2>
+    </div>
+    <div class="pillars">
+      <article class="pillar reveal"><span>01</span><h3>Padrão de hospitalidade internacional</h3><p>Espaços pensados para o maior conforto, bem-estar e convívio de moradores e visitantes.</p></article>
+      <article class="pillar reveal"><span>02</span><h3>Projeto Airbnb-friendly³</h3><p>O ON Resort conta com a colaboração do Airbnb. Anuncie sua unidade e ofereça a melhor experiência ao hóspede.</p></article>
+      <article class="pillar reveal"><span>03</span><h3>Retorno sobre o capital</h3><p>Unidades compactas e eficientes que ajudam a otimizar a rentabilidade sobre o investimento.²</p></article>
+      <article class="pillar reveal"><span>04</span><h3>Administração sem preocupações</h3><p>As unidades podem ser administradas por empresas especializadas, da manutenção à gestão diária dos hóspedes.</p></article>
+      <article class="pillar reveal"><span>05</span><h3>Potencial de valorização²</h3><p>Barra Olímpica em ciclo de expansão, com oferta limitada de unidades compactas de alta liquidez.</p></article>
+      <article class="pillar reveal"><span>06</span><h3>Lazer de resort</h3><p>Mais de 5 mil m² de infraestrutura completa de lazer e convivência.</p></article>
+      <article class="pillar reveal"><span>07</span><h3>Segurança de bairro planejado</h3><p>Segurança 24h com câmeras, guaritas e monitoramento da associação de moradores.</p></article>
+      <article class="pillar reveal"><span>08</span><h3>Solidez da marca</h3><p>Invista junto a uma das maiores e mais tradicionais incorporadoras do país.</p></article>
+    </div>
+    <p class="note note--light">²Informações de caráter meramente mercadológico, não representando garantia de desempenho econômico futuro. ³As atividades dos anfitriões estão sujeitas às leis e restrições locais. O Airbnb apenas licencia o uso da marca. A RJZ Cyrela é a única responsável pelo desenvolvimento, incorporação, construção, comercialização, entrega e pós-venda do empreendimento.</p>
+  </div>
+</section>
+
+<!-- ============ FICHA TÉCNICA ============ -->
+<section class="section ficha">
+  <div class="container ficha__grid">
+    <div class="reveal">
+      <p class="eyebrow">Ficha técnica</p>
+      <h2 class="h2">Detalhes do projeto.</h2>
+      <img src="assets/img/fiji-suite.jpg" alt="Suíte decorada do Ed. Fiji" loading="lazy" class="ficha__img">
+    </div>
+    <div class="reveal">
+      <dl class="ficha__list">
+        <div><dt>Endereço</dt><dd>Av. Vice-Presidente José Alencar, 1.305 – Barra Olímpica, RJ</dd></div>
+        <div><dt>Terreno</dt><dd>14.576,63 m²</dd></div>
+        <div><dt>Unidades</dt><dd>1.306 — Ed. Caribe (319), Ed. Fiji (258), Ed. Polinésia (729)</dd></div>
+        <div><dt>Tipologias</dt><dd>Studios 32–33 m² · Studio ou 1Q 39–40 m² · 2Q 59–60 m² · Gardens 52–92 m²</dd></div>
+        <div><dt>Pavimentos</dt><dd>Subsolo, térreo, 1º pavimento (lazer e gardens) e 2º ao 15º (apartamentos)</dd></div>
+        <div><dt>Elevadores</dt><dd>Caribe: 3 · Fiji: 4 · Polinésia: 4</dd></div>
+        <div><dt>Estacionamento</dt><dd>254 vagas cobertas no subsolo, 51 descobertas no térreo e 22 para visitantes</dd></div>
+        <div><dt>Realização</dt><dd>RJZ Cyrela e Leblon Realty</dd></div>
+        <div><dt>Arquitetura e fachada</dt><dd>Afonso Kuenerz Arquitetura</dd></div>
+        <div><dt>Paisagismo</dt><dd>Benedito Abbud Arquitetura Paisagística</dd></div>
+        <div><dt>Decoração</dt><dd>Studio RO+CA</dd></div>
+      </dl>
+      <details class="acc">
+        <summary>Sustentabilidade, segurança e acessibilidade</summary>
+        <ul>
+          <li>Coleta seletiva, iluminação com sensores nos halls e bacias com duplo acionamento</li>
+          <li>Irrigação automática de jardins e redutores de vazão nas áreas comuns</li>
+          <li>Tomadas para recarga de carros e bicicletas elétricas</li>
+          <li>Controle de acessos 24h, CFTV com central de monitoramento e segurança perimetral com sensores</li>
+          <li>Acesso PCD às áreas comuns, vagas PCD e lavabos acessíveis</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTATO ============ -->
+<section class="section contato" id="contato">
+  <img class="contato__bg" src="assets/img/terraco-poolhouse.jpg" alt="" loading="lazy">
+  <div class="contato__shade"></div>
+  <div class="container contato__grid">
+    <div class="contato__copy">
+      <p class="eyebrow eyebrow--light">Condições especiais de lançamento</p>
+      <h2 class="h2">Escolha o seu modo. <em>A gente cuida do resto.</em></h2>
+      <p>Fale com um especialista, receba a tabela de preços, plantas completas e agende sua visita ao estande.</p>
+      <a class="btn btn--whats" data-whatsapp href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.7-.6 13.4 13.4 0 0 1-5.2-4.6c-.4-.5-1.1-1.6-1.1-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.3.5-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.6 2.1 1.1 1 2.1 1.3 2.4 1.4.3.2.5.1.6 0l.9-1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.1 1.5Z"/></svg> Falar no WhatsApp</a>
+    </div>
+    <form class="lead-form" id="formFooter" novalidate data-origem="rodape">
+      <h2 class="lead-form__title">Quero receber informações</h2>
+      <label class="field"><span>Nome</span><input name="nome" type="text" autocomplete="name" required placeholder="Seu nome"></label>
+      <label class="field"><span>WhatsApp</span><input name="telefone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="(21) 99999-9999"></label>
+      <label class="field"><span>E-mail</span><input name="email" type="email" autocomplete="email" required placeholder="voce@email.com"></label>
+      <label class="field"><span>Tipologia de interesse</span>
+        <select name="interesse">
+          <option value="">Selecione</option>
+          <option>Studio 32m²</option>
+          <option>Studio ou 1Q 39m²</option>
+          <option>2 quartos 60m²</option>
+          <option>Garden</option>
+          <option>Ainda não sei</option>
+        </select>
+      </label>
+      <fieldset class="field field--choice">
+        <legend>Seu objetivo</legend>
+        <label><input type="radio" name="objetivo" value="Morar" checked> Morar</label>
+        <label><input type="radio" name="objetivo" value="Investir"> Investir</label>
+        <label><input type="radio" name="objetivo" value="Os dois"> Os dois</label>
+      </fieldset>
+      <label class="consent"><input type="checkbox" name="consentimento" required> <span>Aceito receber contato e concordo com a <a href="#privacidade">política de privacidade</a>.</span></label>
+      <button class="btn btn--accent btn--block" type="submit">Enviar</button>
+      <p class="lead-form__msg" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer__top">
+    <div class="footer__brand">
+      <a href="#topo" class="brand brand--footer" aria-label="ON Resort Cidade Jardim">
+        <svg class="brand__mark" viewBox="0 0 64 30" aria-hidden="true"><rect x="1" y="1" width="62" height="28" rx="14" fill="currentColor"/><circle cx="49" cy="15" r="11" fill="none" stroke="#2a160e" stroke-width="3.2"/></svg>
+        <span class="brand__text"><b>N RESORT</b><small>Cidade Jardim</small></span>
+      </a>
+      <p>Realização e incorporação: <b>RJZ Cyrela</b> e <b>Leblon Realty</b>. Construção: RJZ Cyrela.</p>
+    </div>
+    <div class="footer__contact">
+      <p><b data-config="corretorNome">Seu Nome / Imobiliária</b><br>CRECI <span data-config="creci">00000</span></p>
+      <p><a data-whatsapp href="#">WhatsApp <span data-config="telefoneExibicao">(21) 99999-9999</span></a></p>
+    </div>
+  </div>
+  <div class="container footer__legal" id="privacidade">
+    <p>Imagens meramente ilustrativas. As perspectivas e plantas são ilustrações artísticas e podem sofrer alterações. Móveis, objetos e utensílios não fazem parte do contrato. Paisagismo com porte de vegetação ilustrativo, que atingirá seu desenvolvimento ao longo do tempo. Informações de caráter mercadológico, não representando garantia de desempenho econômico futuro. O Parque Linear é área pública mantida pela ASCIJA e não faz parte do condomínio. Serviços sujeitos à Convenção de Condomínio, alguns pagos conforme uso. Este site é mantido por corretor/imobiliária parceira e não é o site oficial da incorporadora. Os dados enviados nos formulários são utilizados exclusivamente para retorno de contato, conforme a LGPD (Lei 13.709/2018).</p>
+    <p>© <span id="ano"></span> ON Resort Cidade Jardim</p>
+  </div>
+</footer>
+
+<!-- WhatsApp flutuante + barra mobile -->
+<a class="whats-float" data-whatsapp href="#" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.7-.6 13.4 13.4 0 0 1-5.2-4.6c-.4-.5-1.1-1.6-1.1-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.3.5-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.6 2.1 1.1 1 2.1 1.3 2.4 1.4.3.2.5.1.6 0l.9-1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.1 1.5Z"/></svg></a>
+<div class="mobile-bar">
+  <a href="#contato" class="btn btn--accent">Receber tabela</a>
+  <a data-whatsapp href="#" class="btn btn--whats">WhatsApp</a>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox__close" aria-label="Fechar">×</button>
+  <button class="lightbox__nav lightbox__prev" aria-label="Anterior">‹</button>
+  <figure><img alt=""><figcaption></figcaption></figure>
+  <button class="lightbox__nav lightbox__next" aria-label="Próxima">›</button>
+</div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

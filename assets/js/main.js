@@ -23,6 +23,7 @@
       openWaModal(a.getAttribute("data-origem") || (a.classList.contains("whats-float") ? "whatsapp-flutuante" : a.closest(".mobile-bar") ? "whatsapp-barra-mobile" : a.closest(".footer") ? "whatsapp-rodape" : "whatsapp-contato"));
     });
   });
+  $$("[data-creci-line]").forEach(function (el) { el.hidden = !CFG.creci; });
   var ano = $("#ano"); if (ano) ano.textContent = new Date().getFullYear();
 
   function track(event, data) {

@@ -8,8 +8,8 @@
  *                    em /api/leads (Worker onresort + D1). Painel em /admin.
  */
 window.ONRESORT_CONFIG = {
-  whatsapp: "5521996909909",
-  telefoneExibicao: "(21) 99690-9909",
+  whatsapp: "5521996903909",
+  telefoneExibicao: "(21) 99690-3909",
   corretorNome: "Rafael Bodas",
   imobiliaria: "JBI",
   creci: "",

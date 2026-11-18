@@ -141,7 +141,7 @@
     window.addEventListener("load", function () {
       teste("Tag configurada: " + CFG.googleAdsId + " · rótulo: " + (CFG.googleAdsLeadLabel || "(vazio)"), "info");
       setTimeout(function () {
-        var carregou = !!(window.google_tag_manager || [].some.call(document.scripts, function (s) { return /gtag\/js/.test(s.src) && performance.getEntriesByName(s.src).length; }));
+        var carregou = !!(window.google_tag_manager || window.google_tag_data || [].some.call(document.scripts, function (s) { return /gtag\/js|gtm\.js/.test(s.src) && performance.getEntriesByName(s.src).length; }));
         teste(carregou ? "Tag do Google carregada" : "Tag do Google NÃO carregou (bloqueador de anúncios ativo?)", carregou ? "ok" : "erro");
         teste("Agora envie um formulário ou o popup do WhatsApp para testar a conversão.", "info");
       }, 2500);
@@ -150,9 +150,12 @@
         try {
           new PerformanceObserver(function (list) {
             list.getEntries().forEach(function (e) {
-              if (/googleadservices\.com\/pagead\/conversion|google\.com\/pagead\/1p-conversion|\/ccm\/collect|googleads\.g\.doubleclick\.net\/pagead\/viewthroughconversion/.test(e.name) && e.name.indexOf(CFG.googleAdsId.replace("AW-", "")) > -1) {
-                var conv = e.name.indexOf(CFG.googleAdsLeadLabel) > -1 || /[?&]label=/.test(e.name);
-                teste((conv ? "Conversão recebida pelo Google" : "Requisição ao Google Ads") + " (" + new URL(e.name).host + ")", conv ? "ok" : "info");
+              // vale para os domínios do Google e para o Google tag gateway (caminho no próprio domínio)
+              if (/\/gtag\/js|\/gtm\.js/.test(e.name) && e.name.indexOf(location.host) > -1) teste("Tag servida pelo seu domínio (Google tag gateway ativo)", "ok");
+              if (e.name.indexOf(CFG.googleAdsId.replace("AW-", "")) > -1 && !/\/gtag\/js/.test(e.name)) {
+                var conv = (CFG.googleAdsLeadLabel && e.name.indexOf(CFG.googleAdsLeadLabel) > -1) || /[?&]label=/.test(e.name);
+                var host = new URL(e.name).host;
+                teste((conv ? "Conversão recebida pelo Google" : "Requisição ao Google Ads") + " (" + (host === location.host ? "via seu domínio" : host) + ")", conv ? "ok" : "info");
               }
             });
           }).observe({ type: "resource", buffered: true });

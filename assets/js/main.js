@@ -111,7 +111,54 @@
     window.gtag("event", "generate_lead", { send_to: CFG.googleAdsId, lead_origem: lead.origem, interesse: lead.interesse || undefined });
     if (CFG.googleAdsId && CFG.googleAdsLeadLabel) {
       window.gtag("event", "conversion", { send_to: CFG.googleAdsId + "/" + CFG.googleAdsLeadLabel, transaction_id: lead.event_id });
+      teste("Conversão de lead disparada: " + CFG.googleAdsId + "/" + CFG.googleAdsLeadLabel, "wait");
+    } else {
+      teste("Rótulo da conversão não configurado (googleAdsLeadLabel)", "erro");
     }
+  }
+
+  /* ---------- Modo de teste: abra o site com ?teste=1 ----------
+   * Mostra um painel com o status da tag do Google e da conversão de lead.
+   * Leads enviados neste modo entram no CRM marcados como [TESTE].        */
+  var MODO_TESTE = /(?:^|[?&])teste=1(?:&|$)/.test(location.search);
+  var painel = null;
+  function teste(msg, tipo) {
+    if (!MODO_TESTE) return;
+    if (!painel) {
+      painel = document.createElement("div");
+      painel.setAttribute("style", "position:fixed;left:12px;top:12px;z-index:9999;width:min(380px,calc(100vw - 24px));max-height:60vh;overflow:auto;background:#111;color:#fff;font:13px/1.45 system-ui,sans-serif;border-radius:12px;padding:12px 14px;box-shadow:0 10px 40px rgba(0,0,0,.4)");
+      painel.innerHTML = '<b style="font-size:14px">Modo de teste · Google Ads</b><ul style="list-style:none;margin:8px 0 0;padding:0" id="testeLog"></ul>';
+      document.body.appendChild(painel);
+    }
+    var cor = { ok: "#4ade80", erro: "#f87171", wait: "#fbbf24", info: "#93c5fd" }[tipo || "info"];
+    var icone = { ok: "✓", erro: "✗", wait: "…", info: "•" }[tipo || "info"];
+    var li = document.createElement("li");
+    li.style.cssText = "padding:4px 0;border-top:1px solid #333;color:" + cor;
+    li.textContent = icone + " " + new Date().toLocaleTimeString("pt-BR") + " · " + msg;
+    painel.querySelector("#testeLog").appendChild(li);
+  }
+  if (MODO_TESTE) {
+    window.addEventListener("load", function () {
+      teste("Tag configurada: " + CFG.googleAdsId + " · rótulo: " + (CFG.googleAdsLeadLabel || "(vazio)"), "info");
+      setTimeout(function () {
+        var carregou = !!(window.google_tag_manager || [].some.call(document.scripts, function (s) { return /gtag\/js/.test(s.src) && performance.getEntriesByName(s.src).length; }));
+        teste(carregou ? "Tag do Google carregada" : "Tag do Google NÃO carregou (bloqueador de anúncios ativo?)", carregou ? "ok" : "erro");
+        teste("Agora envie um formulário ou o popup do WhatsApp para testar a conversão.", "info");
+      }, 2500);
+      // observa as requisições que levam a conversão ao Google
+      if ("PerformanceObserver" in window) {
+        try {
+          new PerformanceObserver(function (list) {
+            list.getEntries().forEach(function (e) {
+              if (/googleadservices\.com\/pagead\/conversion|google\.com\/pagead\/1p-conversion|\/ccm\/collect|googleads\.g\.doubleclick\.net\/pagead\/viewthroughconversion/.test(e.name) && e.name.indexOf(CFG.googleAdsId.replace("AW-", "")) > -1) {
+                var conv = e.name.indexOf(CFG.googleAdsLeadLabel) > -1 || /[?&]label=/.test(e.name);
+                teste((conv ? "Conversão recebida pelo Google" : "Requisição ao Google Ads") + " (" + new URL(e.name).host + ")", conv ? "ok" : "info");
+              }
+            });
+          }).observe({ type: "resource", buffered: true });
+        } catch (_) {}
+      }
+    });
   }
 
   /* ---------- Header ---------- */
@@ -261,7 +308,7 @@
       nome: form.nome.value.trim(), telefone: form.telefone.value, email: form.email.value.trim(),
       interesse: form.interesse ? form.interesse.value : "", objetivo: objetivo,
       website: form.website ? form.website.value : "",
-      origem: origem, cta: cta || (btn ? btn.textContent.trim() : ""),
+      origem: (MODO_TESTE ? "[TESTE] " : "") + origem, cta: cta || (btn ? btn.textContent.trim() : ""),
       pagina: location.href, referrer: document.referrer
     }, metaIds(), utm());
   }

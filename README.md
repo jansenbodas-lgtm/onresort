@@ -32,7 +32,7 @@ Qualquer hospedagem estática serve: Netlify, Vercel, Cloudflare Pages, GitHub P
 O site roda como Cloudflare Worker com arquivos estáticos (`wrangler.jsonc` + `src/worker.js`).
 Todo lead (formulários e popup do WhatsApp) é gravado no CRM, mesmo que a pessoa não conclua a conversa no WhatsApp.
 
-- **Painel:** `https://onresort.jansenbodas.workers.dev/admin` · login padrão **admin / admin**.
+- **Painel:** `https://onresort.lancamentobarra.com.br/admin` · login padrão **admin / admin**.
 - **Pipeline:** Novo lead → Tentando contato → Consegui falar → Marcou visita → Visitou → Fez proposta → Venda fechada / Perdido. Arraste os cards entre as etapas.
 - **Ficha do lead:** dados, unidade, valor, visita agendada, próxima ação, motivo de perda, observações, histórico (ligação, WhatsApp, e-mail, visita, nota) e atalhos de WhatsApp/ligar/e-mail.
 - **Lista e CSV:** visão em tabela, busca, filtros e exportação.

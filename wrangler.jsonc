@@ -23,7 +23,9 @@
   "vars": {
     // ID do pixel da Meta (público). O token da API de Conversões vai como
     // Secret META_CAPI_TOKEN no painel do Cloudflare, nunca neste arquivo.
-    "META_PIXEL_ID": "650460263189144"
+    "META_PIXEL_ID": "650460263189144",
+    // domínio oficial: o endereço *.workers.dev redireciona para cá
+    "SITE_URL": "https://onresort.lancamentobarra.com.br"
   },
   "keep_vars": true,
   "observability": { "enabled": true }

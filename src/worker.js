@@ -360,6 +360,11 @@ async function servePage(request, env, ctx, url) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    // endereço antigo (*.workers.dev) redireciona para o domínio oficial; CRM e API seguem nos dois
+    if (env.SITE_URL && url.hostname.endsWith(".workers.dev") && !url.pathname.startsWith("/api/") && !url.pathname.startsWith("/admin")) {
+      const destino = new URL(url.pathname + url.search, env.SITE_URL);
+      return Response.redirect(destino.toString(), 301);
+    }
     if (url.pathname.startsWith("/api/")) {
       try {
         return await handleApi(request, env, url, ctx);

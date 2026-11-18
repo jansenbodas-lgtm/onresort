@@ -7,7 +7,7 @@ const crypto = require("crypto");
 
 const root = path.join(__dirname, "..");
 const out = path.join(root, "dist");
-const items = ["index.html", "assets", "_headers"];
+const items = ["index.html", "assets", "_headers", "robots.txt", "sitemap.xml"];
 
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
